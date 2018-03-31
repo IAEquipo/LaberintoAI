@@ -10,7 +10,7 @@ from pygame.locals import *
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = (127, 127, 127)
-ORGANGE_L = (252, 190, 149)
+ORANGE_L = (252, 190, 149)
 
 PIXEL = 30
 
@@ -31,7 +31,7 @@ class Scene:
         pygame.display.set_caption('Artificial Intelligence')
         return screen
 
-    def paint_world(self, screen, vector):
+    def paint_world(self, screen, matrix):
         x = 0
         y = 0
         screen.fill(WHITE)
@@ -66,8 +66,8 @@ def read(ruta):
 def main():
     vector = read('file.txt')
 
-    m = len(vector[0])
-    n = len(vector)-1
+    m = len(matrix[0])
+    n = len(matrix)-1
 
     scene = Scene(m, n)
 
