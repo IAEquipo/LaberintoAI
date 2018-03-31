@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Módulos
-import pygame, sys, time
+import pygame, sys
 from pygame.locals import *
 
 # Constantes
@@ -11,6 +11,7 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = (127, 127, 127)
 ORANGE_L = (252, 190, 149)
+BLUE = (0, 177, 249)
 
 PIXEL = 30
 
@@ -35,12 +36,14 @@ class Scene:
         x = 0
         y = 0
         screen.fill(WHITE)
-        for line in vector:
+        for line in matrix:
             for value in line:
                 if value == '0':
                     pygame.draw.rect(screen, GRAY, (x, y, PIXEL, PIXEL), 0)
                 if value == '1':
-                    pygame.draw.rect(screen, ORGANGE_L, (x, y, PIXEL, PIXEL), 0)
+                    pygame.draw.rect(screen, ORANGE_L, (x, y, PIXEL, PIXEL), 0)
+                if value == '2':
+                    pygame.draw.rect(screen, BLUE, (x, y, PIXEL, PIXEL), 0)
                 x += PIXEL
             y += PIXEL
             x = 0
@@ -64,7 +67,7 @@ def read(ruta):
 # ---------------------------------------------------------------------
 
 def main():
-    vector = read('file.txt')
+    matrix = read('file.txt')
 
     m = len(matrix[0])
     n = len(matrix)-1
@@ -73,7 +76,7 @@ def main():
 
     screen = scene.create_screen(scene.getDimensions())
 
-    scene.paint_world(screen, vector)
+    scene.paint_world(screen, matrix)
 
     while True:
         for evento in pygame.event.get():
