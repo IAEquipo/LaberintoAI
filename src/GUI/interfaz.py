@@ -42,8 +42,6 @@ class Scene:
                     pygame.draw.rect(screen, GRAY, (x, y, PIXEL, PIXEL), 0)
                 if value == '1':
                     pygame.draw.rect(screen, ORANGE_L, (x, y, PIXEL, PIXEL), 0)
-                if value == '2':
-                    pygame.draw.rect(screen, BLUE, (x, y, PIXEL, PIXEL), 0)
                 x += PIXEL
             y += PIXEL
             x = 0
