@@ -7,10 +7,11 @@ from pygame.locals import *
 
 
 #Modulos personales
-import Scene
-#from Archivo import *
+from GUI.Scene import *
+from Archivo.Archivo import *
 
 # Constantes
+
 
 # ---------------------------------------------------------------------
 
@@ -30,17 +31,13 @@ def read(ruta):
 # ---------------------------------------------------------------------
 
 def main():
-    #texto = Archivo()
-
-    # = texto.read('file.txt')
-
+    texto = Archivo()
+    matrix = texto.read('file.txt')
     m = len(matrix[0])
     n = len(matrix)-1
 
     scene = Scene(m, n)
-
     screen = scene.create_screen(scene.getDimensions())
-
     scene.paint_world(screen, matrix)
 
     while True:

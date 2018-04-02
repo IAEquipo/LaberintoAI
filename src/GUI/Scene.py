@@ -1,6 +1,23 @@
 import pygame, sys
 from pygame.locals import *
 
+# Constantes
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+GRAY = (127, 127, 127)
+ORANGE_L = (252, 190, 149)
+BLUE = (0, 177, 249)
+YELLOW = (255, 190, 65)
+GREEN = (146, 209, 101)
+
+PIXEL = 30
+
+"""
+def paint_coord(screen, x, y):
+    if x == 0 and y ==0 or x == 0 and y !=0 or x != 0 and y == 0:
+        pygame.draw.rect(screen, BLACK, (x, y, PIXEL, PIXEL))
+"""
+
 class Scene:
     def __init__(self, m, n):
         width = m * PIXEL
@@ -20,12 +37,23 @@ class Scene:
         y = 0
         screen.fill(WHITE)
         for line in matrix:
+            #paint_coord(screen, x, y)
+            #x += PIXEL
             for value in line:
                 if value == '0':
                     pygame.draw.rect(screen, GRAY, (x, y, PIXEL, PIXEL), 0)
-                if value == '1':
+                elif value == '1':
                     pygame.draw.rect(screen, ORANGE_L, (x, y, PIXEL, PIXEL), 0)
+                elif value == '2':
+                    pygame.draw.rect(screen, BLUE, (x, y, PIXEL, PIXEL), 0)
+                elif value == '3':
+                    pygame.draw.rect(screen, YELLOW, (x, y, PIXEL, PIXEL), 0)
+                elif value == '4':
+                    pygame.draw.rect(screen, GREEN, (x, y, PIXEL, PIXEL), 0)
                 x += PIXEL
             y += PIXEL
             x = 0
         pygame.display.update()
+
+    def ask_terrain():
+        pos = pygame.mouse.get_pos()
