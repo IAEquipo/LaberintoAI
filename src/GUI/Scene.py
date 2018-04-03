@@ -10,6 +10,8 @@ BLUE = (0, 177, 249)
 YELLOW = (255, 190, 65)
 GREEN = (146, 209, 101)
 
+DEFAULT = (243, 123, 173)
+
 COLOR_L = (244,110,120)
 
 PIXEL = 30
@@ -66,6 +68,8 @@ class Scene:
                     pygame.draw.rect(screen, YELLOW, (x, y, PIXEL, PIXEL), 0)
                 elif value == '4':
                     pygame.draw.rect(screen, GREEN, (x, y, PIXEL, PIXEL), 0)
+                else:
+                    pygame.draw.rect(screen, DEFAULT, (x, y, PIXEL, PIXEL), 0)
                 x += PIXEL
             y += PIXEL
             x = 0
@@ -89,3 +93,15 @@ class Scene:
 
         screen.blit(label, (pos[0], pos[1]))
         pygame.display.flip()
+
+    def change_terrain(self):
+        pos = pygame.mouse.get_pos()
+
+        while True:
+            print ("Moutain -> 0\nEarth -> 1\nWater -> 2\nSand -> 3\nForest -> 4\n")
+            newTerrain = raw_input("Insert the value for change the terrain: ")
+
+            if newTerrain < "5" and newTerrain >= "0":
+                break
+
+        self.world[pos[1]/PIXEL][pos[0]/50] = newTerrain

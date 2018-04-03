@@ -41,8 +41,9 @@ def main():
 
         if(pygame.mouse.get_pressed()[0] != 0):
             scene.ask_terrain(screen)
-
-
+        if(pygame.mouse.get_pressed()[2] != 0):
+            scene.change_terrain()
+            scene.paint_world(screen, matrix, 1)
 
 
 if __name__ == '__main__':
