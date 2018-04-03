@@ -14,6 +14,10 @@ DEFAULT = (243, 123, 173)
 
 COLOR_L = (244,110,120)
 
+COLOR_BEIGN = (255, 0, 0)
+
+COLOR_LABEL = (255,0,255)
+
 PIXEL = 30
 
 
@@ -34,10 +38,19 @@ class Scene:
     def getDimensions(self):
         return self.dimensions
 
+    def getworld(self):
+        return self.world
+
+    def getDarkSide(self):
+        return self.darkside
+
     def create_screen(self, dimensions):
         screen = pygame.display.set_mode((self.dimensions))
         pygame.display.set_caption('Artificial Intelligence')
         return screen
+
+    def copy_world(self, m, n):
+        self.darkside = [[ [-1,0,0,0,0] for j in range(m)] for i in range(n)]
 
     def paint_world(self, screen, matrix, flag):
         if flag == 0:
@@ -48,11 +61,11 @@ class Scene:
         x = 0
         y = 0
 
-        screen.fill(WHITE)
+        #screen.fill(WHITE)
         for line in matrix:
-        
             for value in line:
-
+                if flag == 0:
+                    value = value[0]
                 if value == '0':
                     pygame.draw.rect(screen, GRAY, (x, y, PIXEL, PIXEL), 0)
                 elif value == '1':
@@ -63,12 +76,14 @@ class Scene:
                     pygame.draw.rect(screen, YELLOW, (x, y, PIXEL, PIXEL), 0)
                 elif value == '4':
                     pygame.draw.rect(screen, GREEN, (x, y, PIXEL, PIXEL), 0)
+                elif value == -1:
+                    pygame.draw.rect(screen, BLACK, (x, y, PIXEL, PIXEL), 0)
                 else:
                     pygame.draw.rect(screen, DEFAULT, (x, y, PIXEL, PIXEL), 0)
                 x += PIXEL
             y += PIXEL
             x = 0
-        pygame.display.update()
+        #pygame.display.update()
 
     def ask_terrain(self, screen):
         pos = pygame.mouse.get_pos()
@@ -99,4 +114,67 @@ class Scene:
             if newTerrain < "5" and newTerrain >= "0":
                 break
 
-        self.world[pos[1]/PIXEL][pos[0]/50] = newTerrain
+        self.world[pos[1]/PIXEL][pos[0]/PIXEL] = newTerrain
+
+    def paint_beign(self, screen, x, y):
+        pygame.draw.rect(screen, COLOR_BEIGN, [x, y, PIXEL, PIXEL], 0)
+
+        self.darkside[y/PIXEL][x/PIXEL][0] = self.world[y/PIXEL][x/PIXEL]
+
+        if (x/PIXEL != 0):
+            self.darkside[y/PIXEL][(x/PIXEL)-1][0] = self.world[y/PIXEL][(x/PIXEL)-1]
+
+        if (y/PIXEL != 0):
+            self.darkside[(y/PIXEL)-1][x/PIXEL][0] = self.world[(y/PIXEL)-1][x/PIXEL]
+
+        if ((x/PIXEL)+1 < self.dimensions[0]/PIXEL):
+            self.darkside[y/PIXEL][(x/PIXEL)+1][0] = self.world[y/PIXEL][(x/PIXEL)+1]
+
+        if ((y/PIXEL)+1 < self.dimensions[1]/PIXEL):
+            self.darkside[(y/PIXEL)+1][x/PIXEL][0] = self.world[(y/PIXEL)+1][x/PIXEL]
+
+    def askUP(self,beignX,beignY):
+        if (beignY - 1) >= 0:
+            if(self.world[beignY-1][beignX] != 0):
+                return self.world[beignY-1][beignX]
+        else:
+            return False
+
+    def askDOWN(self,beignX,beignY):
+        if (beignY + 1) != (self.dimensions[1]/PIXEL):
+            if(self.world[beignY+1][beignX] != 0):
+                return self.world[beignY+1][beignX]
+        else:
+            return False
+
+    def askLEFT(self,beignX,beignY):
+        if (beignX - 1) >= 0:
+            if(self.world[beignY][beignX-1] != 0):
+                return self.world[beignY][beignX-1]
+        else:
+            return False
+
+    def askRIGHT(self,beignX,beignY):
+        if (beignX + 1) != (self.dimensions[0]/PIXEL):
+            if(self.world[beignY][beignX+1] != 0):
+                return self.world[beignY][beignX+1]
+        else:
+            return False
+
+    def print_darkside(self):
+        i = 0
+        for x in self.darkside:
+            print("Darkside[{0}]-> \t{1}".format(i,self.darkside[i]))
+            i = i+1
+
+    def print_world(self):
+        i = 0
+        for x in self.world:
+            print("World[{0}]-> \t{1}".format(i,self.world[i]))
+            i = i+1
+
+    def displayInfo(self, screen, string):
+        pos = pygame.mouse.get_pos()
+        font = pygame.font.SysFont("monospace bold", 16)
+        label = font.render(str(string), 1, COLOR_LABEL )
+        screen.blit(label, (pos[0]+5, pos[1]-10))
