@@ -10,15 +10,20 @@ BLUE = (0, 177, 249)
 YELLOW = (255, 190, 65)
 GREEN = (146, 209, 101)
 
+COLOR_L = (244,110,120)
+
 PIXEL = 30
 
-"""
+
 def paint_coord(screen, x, y):
     if x == 0 and y ==0 or x == 0 and y !=0 or x != 0 and y == 0:
         pygame.draw.rect(screen, BLACK, (x, y, PIXEL, PIXEL))
-"""
+
 
 class Scene:
+    darkside = []
+    world = []
+
     def __init__(self, m, n):
         width = m * PIXEL
         height = n * PIXEL
@@ -32,14 +37,25 @@ class Scene:
         pygame.display.set_caption('Artificial Intelligence')
         return screen
 
-    def paint_world(self, screen, matrix):
+    def paint_world(self, screen, matrix, flag):
+        if flag == 0:
+            self.darkside = matrix
+        if flag == 1:
+            self.world = matrix
+
         x = 0
         y = 0
+
         screen.fill(WHITE)
         for line in matrix:
             #paint_coord(screen, x, y)
             #x += PIXEL
             for value in line:
+                #if y == 0:
+                    #paint_coord(screen, x, y)
+                    #y += PIXEL
+                #if flag == 0:
+
                 if value == '0':
                     pygame.draw.rect(screen, GRAY, (x, y, PIXEL, PIXEL), 0)
                 elif value == '1':
@@ -55,5 +71,21 @@ class Scene:
             x = 0
         pygame.display.update()
 
-    def ask_terrain():
+    def ask_terrain(self, screen):
         pos = pygame.mouse.get_pos()
+        num = self.world[pos[1]/PIXEL][pos[0]/PIXEL]
+        font = pygame.font.SysFont('comicsansms', 30)
+
+        if num == '0':
+            label = font.render("Mountain", 1, COLOR_L)
+        elif num == '1':
+            label = font.render("Earth", 1, COLOR_L)
+        elif num == '2':
+            label = font.render("Water", 1, COLOR_L)
+        elif num == '3':
+            label = font.render("Sand", 1, COLOR_L)
+        elif num == '4':
+            label = font.render("Forest", 1, COLOR_L)
+
+        screen.blit(label, (pos[0], pos[1]))
+        pygame.display.flip()

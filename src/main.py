@@ -17,16 +17,7 @@ from Archivo.Archivo import *
 
 # Funciones
 # ---------------------------------------------------------------------
-def read(ruta):
-    with open(ruta, 'r') as leer:
-        contenido = leer.read().split('\n')
-    i = 0
-    for line in contenido:
-        contenido[i] = line.split(',')
-        i = i + 1
 
-    leer.close()
-    return contenido
 
 # ---------------------------------------------------------------------
 
@@ -38,14 +29,21 @@ def main():
 
     scene = Scene(m, n)
     screen = scene.create_screen(scene.getDimensions())
-    scene.paint_world(screen, matrix)
+    scene.paint_world(screen, matrix, 1)
+
 
     while True:
         for evento in pygame.event.get():
             if evento.type == QUIT:
                 pygame.quit()
                 sys.exit(0)
-    return 0
+        scene.paint_world(screen, matrix, 1)
+
+        if(pygame.mouse.get_pressed()[0] != 0):
+            scene.ask_terrain(screen)
+
+
+
 
 if __name__ == '__main__':
     pygame.init()
