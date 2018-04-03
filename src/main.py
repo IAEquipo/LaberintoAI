@@ -96,6 +96,35 @@ def main():
         if(pygame.mouse.get_pressed()[0] != 0):
             scene.ask_terrain(screen)
 
+        Decision = 0
+
+        if(scene.askUP(beign.getX/PIXEL, beign.getY/PIXEL) > "0"):
+            Decision = Decision + 1
+        if(scene.askDOWN(beign.getX/PIXEL, beign.getY/PIXEL) > "0"):
+            Decision = Decision + 1
+        if(scene.askRIGHT(beign.getX/PIXEL, beign.getY/PIXEL) > "0"):
+            Decision = Decision + 1
+        if(scene.askLEFT(beign.getX/PIXEL, beign.getY/PIXEL) > "0"):
+            Decision = Decision + 1
+
+        Visited = "v"
+        if(beign.getCostT == 0):
+            Inicio = "i"
+        else:
+            Inicio = 0
+
+        scene.getDarkSide()[posBeignLast[1]][posBeignLast[0]][4] = 0
+        Actual = "a"
+        Shadow =scene.getDarkSide()[beign.getY/PIXEL][beign.getX/PIXEL][0]
+
+        if(Decision > 2):
+            d = "d"
+        else:
+            d = 0
+
+        scene.getDarkSide()[beign.getY/PIXEL][beign.getX/PIXEL] = [Shadow,Inicio,Visited,d,Actual]
+
+
         etiqueta = pygame.mouse.get_pos()
         string = "{0}"
         if (etiqueta[0] <= scene.getDimensions()[0] and etiqueta[1] <= scene.getDimensions()[1]):

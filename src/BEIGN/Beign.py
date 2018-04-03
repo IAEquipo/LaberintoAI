@@ -26,7 +26,7 @@ class Beign:
 
     @property
     def getCostT(self):
-        return self.cotT
+        return self.costT
 
     def UP(self, map, flag):
         if self.costs[int(map) + 1] != 'X':
