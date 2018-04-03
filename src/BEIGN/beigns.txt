@@ -1,0 +1,4 @@
+Human,X,1,2,3,4,5,5
+Monkey,X,2,4,3,1,5,X
+Octopus,X,2,1,X,3,2,X
+Sasquatch,15,4,X,X,4,5,3
