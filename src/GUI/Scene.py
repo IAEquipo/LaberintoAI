@@ -50,13 +50,8 @@ class Scene:
 
         screen.fill(WHITE)
         for line in matrix:
-            #paint_coord(screen, x, y)
-            #x += PIXEL
+        
             for value in line:
-                #if y == 0:
-                    #paint_coord(screen, x, y)
-                    #y += PIXEL
-                #if flag == 0:
 
                 if value == '0':
                     pygame.draw.rect(screen, GRAY, (x, y, PIXEL, PIXEL), 0)
