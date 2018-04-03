@@ -10,6 +10,7 @@ from pygame.locals import *
 from src.GUI.Scene import *
 from src.Archivo.Archivo import *
 from src.BEIGN.Beign import *
+from anytree import Node, RenderTree, search
 
 # Constantes
 
@@ -34,12 +35,14 @@ def main():
     m = len(matrix[0])
     n = len(matrix)-1
 
+    flagChild = False
     scene = Scene(m, n)
     screen = scene.create_screen(scene.getDimensions())
     scene.paint_world(screen, matrix, 1)
     scene.copy_world(m, n)
     scene.paint_world(screen, scene.getDarkSide(), 0)
     posBeign = [0, 0]
+    lastDecision = "0,0"
     posBeignLast = [0, 0]
 
     while True:
@@ -53,6 +56,8 @@ def main():
             break
 
     beign = Beign('Human', posBeign[0], posBeign[1], costs)
+    lastDecision = "" + str(posBeign[0]//PIXEL) + "," + str(posBeign[1]//PIXEL) + ""
+    raiz = Node(lastDecision)
 
     reloj = pygame.time.Clock()
     while True:
@@ -71,24 +76,29 @@ def main():
                 posBeignLast[0]=beign.getX//PIXEL
                 posBeignLast[1]=beign.getY//PIXEL
                 beign.UP(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL),1)
+                flagChild = False
+
 
         if(pygame.key.get_pressed()[pygame.K_DOWN]):
             if(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL)):
                 posBeignLast[0]=beign.getX//PIXEL
                 posBeignLast[1]=beign.getY//PIXEL
                 beign.DOWN(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL),1)
+                flagChild = False
 
         if(pygame.key.get_pressed()[pygame.K_RIGHT]):
             if(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL)):
                 posBeignLast[0]=beign.getX//PIXEL
                 posBeignLast[1]=beign.getY//PIXEL
                 beign.RIGHT(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL),1)
+                flagChild = False
 
         if(pygame.key.get_pressed()[pygame.K_LEFT]):
             if(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL)):
                 posBeignLast[0]=beign.getX//PIXEL
                 posBeignLast[1]=beign.getY//PIXEL
                 beign.LEFT(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL),1)
+                flagChild = False
 
         scene.paint_world(screen, scene.getDarkSide(), 0)
         scene.paint_beign(screen, beign.getX, beign.getY)
@@ -98,13 +108,13 @@ def main():
 
         Decision = 0
 
-        if(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL) != False):
+        if(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL) != "0"):
             Decision = Decision + 1
-        if(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL) != False):
+        if(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL) != "0"):
             Decision = Decision + 1
-        if(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL) != False):
+        if(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL) != "0"):
             Decision = Decision + 1
-        if(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL) != False):
+        if(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL) != "0"):
             Decision = Decision + 1
 
         Visited = "v"
@@ -115,11 +125,16 @@ def main():
 
         scene.getDarkSide()[posBeignLast[1]][posBeignLast[0]][4] = 0
         Actual = "a"
-        Shadow =scene.getDarkSide()[beign.getY//PIXEL][beign.getX//PIXEL][0]
+        Shadow = scene.getDarkSide()[beign.getY//PIXEL][beign.getX//PIXEL][0]
 
         if(Decision > 2):
             d = "d"
-
+            if flagChild == False:
+                aqui = search.find(raiz, lambda node: node.name == lastDecision)
+                Node("" + str(beign.getX // PIXEL) + "," + str(beign.getY // PIXEL) + "", parent=aqui)
+                flagChild = True
+                lastDecision = "" + str(beign.getX // PIXEL) + "," + str(beign.getY // PIXEL) + ""
+                print(RenderTree(raiz))
         else:
             d = 0
 
@@ -133,6 +148,7 @@ def main():
 
         pygame.display.flip()
         reloj.tick(15)
+
 
 if __name__ == '__main__':
     pygame.init()
