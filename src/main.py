@@ -7,9 +7,9 @@ from pygame.locals import *
 
 
 #Modulos personales
-from GUI.Scene import *
-from Archivo.Archivo import *
-from BEIGN.Beign import *
+from src.GUI.Scene import *
+from src.Archivo.Archivo import *
+from src.BEIGN.Beign import *
 
 # Constantes
 
@@ -49,7 +49,7 @@ def main():
         posBeign[0] = x
         posBeign[1] = y
 
-        if matrix[y/PIXEL][x/PIXEL] != "0":
+        if matrix[y//PIXEL][x//PIXEL] != "0":
             break
 
     beign = Beign('Human', posBeign[0], posBeign[1], costs)
@@ -67,28 +67,28 @@ def main():
             scene.paint_world(screen, matrix, 1)
 
         if(pygame.key.get_pressed()[pygame.K_UP]):
-            if(scene.askUP(beign.getX/PIXEL, beign.getY/PIXEL)):
-                posBeignLast[0]=beign.getX/PIXEL
-                posBeignLast[1]=beign.getY/PIXEL
-                beign.UP(scene.askUP(beign.getX/PIXEL, beign.getY/PIXEL),1)
+            if(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL)):
+                posBeignLast[0]=beign.getX//PIXEL
+                posBeignLast[1]=beign.getY//PIXEL
+                beign.UP(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL),1)
 
         if(pygame.key.get_pressed()[pygame.K_DOWN]):
-            if(scene.askDOWN(beign.getX/PIXEL, beign.getY/PIXEL)):
-                posBeignLast[0]=beign.getX/PIXEL
-                posBeignLast[1]=beign.getY/PIXEL
-                beign.DOWN(scene.askDOWN(beign.getX/PIXEL, beign.getY/PIXEL),1)
+            if(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL)):
+                posBeignLast[0]=beign.getX//PIXEL
+                posBeignLast[1]=beign.getY//PIXEL
+                beign.DOWN(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL),1)
 
         if(pygame.key.get_pressed()[pygame.K_RIGHT]):
-            if(scene.askRIGHT(beign.getX/PIXEL, beign.getY/PIXEL)):
-                posBeignLast[0]=beign.getX/PIXEL
-                posBeignLast[1]=beign.getY/PIXEL
-                beign.RIGHT(scene.askRIGHT(beign.getX/PIXEL, beign.getY/PIXEL),1)
+            if(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL)):
+                posBeignLast[0]=beign.getX//PIXEL
+                posBeignLast[1]=beign.getY//PIXEL
+                beign.RIGHT(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL),1)
 
         if(pygame.key.get_pressed()[pygame.K_LEFT]):
-            if(scene.askLEFT(beign.getX/PIXEL, beign.getY/PIXEL)):
-                posBeignLast[0]=beign.getX/PIXEL
-                posBeignLast[1]=beign.getY/PIXEL
-                beign.LEFT(scene.askLEFT(beign.getX/PIXEL, beign.getY/PIXEL),1)
+            if(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL)):
+                posBeignLast[0]=beign.getX//PIXEL
+                posBeignLast[1]=beign.getY//PIXEL
+                beign.LEFT(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL),1)
 
         scene.paint_world(screen, scene.getDarkSide(), 0)
         scene.paint_beign(screen, beign.getX, beign.getY)
@@ -98,13 +98,13 @@ def main():
 
         Decision = 0
 
-        if(scene.askUP(beign.getX/PIXEL, beign.getY/PIXEL) > "0"):
+        if(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL) != False):
             Decision = Decision + 1
-        if(scene.askDOWN(beign.getX/PIXEL, beign.getY/PIXEL) > "0"):
+        if(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL) != False):
             Decision = Decision + 1
-        if(scene.askRIGHT(beign.getX/PIXEL, beign.getY/PIXEL) > "0"):
+        if(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL) != False):
             Decision = Decision + 1
-        if(scene.askLEFT(beign.getX/PIXEL, beign.getY/PIXEL) > "0"):
+        if(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL) != False):
             Decision = Decision + 1
 
         Visited = "v"
@@ -115,20 +115,21 @@ def main():
 
         scene.getDarkSide()[posBeignLast[1]][posBeignLast[0]][4] = 0
         Actual = "a"
-        Shadow =scene.getDarkSide()[beign.getY/PIXEL][beign.getX/PIXEL][0]
+        Shadow =scene.getDarkSide()[beign.getY//PIXEL][beign.getX//PIXEL][0]
 
         if(Decision > 2):
             d = "d"
+
         else:
             d = 0
 
-        scene.getDarkSide()[beign.getY/PIXEL][beign.getX/PIXEL] = [Shadow,Inicio,Visited,d,Actual]
+        scene.getDarkSide()[beign.getY//PIXEL][beign.getX//PIXEL] = [Shadow,Inicio,Visited,d,Actual]
 
 
         etiqueta = pygame.mouse.get_pos()
         string = "{0}"
         if (etiqueta[0] <= scene.getDimensions()[0] and etiqueta[1] <= scene.getDimensions()[1]):
-            scene.displayInfo(screen, string.format(scene.getDarkSide()[etiqueta[1]/PIXEL][etiqueta[0]/PIXEL]))
+            scene.displayInfo(screen, string.format(scene.getDarkSide()[etiqueta[1]//PIXEL][etiqueta[0]//PIXEL]))
 
         pygame.display.flip()
         reloj.tick(15)
