@@ -87,7 +87,7 @@ class Scene:
 
     def ask_terrain(self, screen):
         pos = pygame.mouse.get_pos()
-        num = self.world[pos[1]/PIXEL][pos[0]/PIXEL]
+        num = self.world[pos[1]//PIXEL][pos[0]//PIXEL]
         font = pygame.font.SysFont('comicsansms', 30)
 
         if num == '0':
@@ -114,24 +114,24 @@ class Scene:
             if newTerrain < "5" and newTerrain >= "0":
                 break
 
-        self.world[pos[1]/PIXEL][pos[0]/PIXEL] = newTerrain
+        self.world[pos[1]//PIXEL][pos[0]//PIXEL] = newTerrain
 
     def paint_beign(self, screen, x, y):
         pygame.draw.rect(screen, COLOR_BEIGN, [x, y, PIXEL, PIXEL], 0)
 
-        self.darkside[y/PIXEL][x/PIXEL][0] = self.world[y/PIXEL][x/PIXEL]
+        self.darkside[y//PIXEL][x//PIXEL][0] = self.world[y//PIXEL][x//PIXEL]
 
-        if (x/PIXEL != 0):
-            self.darkside[y/PIXEL][(x/PIXEL)-1][0] = self.world[y/PIXEL][(x/PIXEL)-1]
+        if (x//PIXEL != 0):
+            self.darkside[y//PIXEL][(x//PIXEL)-1][0] = self.world[y//PIXEL][(x//PIXEL)-1]
 
-        if (y/PIXEL != 0):
-            self.darkside[(y/PIXEL)-1][x/PIXEL][0] = self.world[(y/PIXEL)-1][x/PIXEL]
+        if (y//PIXEL != 0):
+            self.darkside[(y//PIXEL)-1][x//PIXEL][0] = self.world[(y//PIXEL)-1][x//PIXEL]
 
-        if ((x/PIXEL)+1 < self.dimensions[0]/PIXEL):
-            self.darkside[y/PIXEL][(x/PIXEL)+1][0] = self.world[y/PIXEL][(x/PIXEL)+1]
+        if ((x//PIXEL)+1 < self.dimensions[0]//PIXEL):
+            self.darkside[y//PIXEL][(x//PIXEL)+1][0] = self.world[y//PIXEL][(x//PIXEL)+1]
 
-        if ((y/PIXEL)+1 < self.dimensions[1]/PIXEL):
-            self.darkside[(y/PIXEL)+1][x/PIXEL][0] = self.world[(y/PIXEL)+1][x/PIXEL]
+        if ((y//PIXEL)+1 < self.dimensions[1]//PIXEL):
+            self.darkside[(y//PIXEL)+1][x//PIXEL][0] = self.world[(y//PIXEL)+1][x//PIXEL]
 
     def askUP(self,beignX,beignY):
         if (beignY - 1) >= 0:
@@ -141,7 +141,7 @@ class Scene:
             return False
 
     def askDOWN(self,beignX,beignY):
-        if (beignY + 1) != (self.dimensions[1]/PIXEL):
+        if (beignY + 1) != (self.dimensions[1]//PIXEL):
             if(self.world[beignY+1][beignX] != 0):
                 return self.world[beignY+1][beignX]
         else:
@@ -155,7 +155,7 @@ class Scene:
             return False
 
     def askRIGHT(self,beignX,beignY):
-        if (beignX + 1) != (self.dimensions[0]/PIXEL):
+        if (beignX + 1) != (self.dimensions[0]//PIXEL):
             if(self.world[beignY][beignX+1] != 0):
                 return self.world[beignY][beignX+1]
         else:
