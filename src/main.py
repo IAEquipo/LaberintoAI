@@ -11,14 +11,8 @@ from GUI.Scene import *
 from Archivo.Archivo import *
 from BEIGN.Beign import *
 
-
-#hios de su puta madre :v
-
-# Constantes khe me ves perro
-
-
+# Constantes
 PIXEL = 30
-
 # ---------------------------------------------------------------------
 
 # Funciones
@@ -44,7 +38,7 @@ def main():
     scene.copy_world(m, n)
     scene.paint_world(screen, scene.getDarkSide(), 0)
     posBeign = [0, 0]
-    lastDecision = "0,0"
+    lastDecision = "0,0->0"
     posBeignLast = [0, 0]
 
     while True:
@@ -58,7 +52,7 @@ def main():
             break
 
     beign = Beign('Human', posBeign[0], posBeign[1], costs)
-    lastDecision = "" + str(posBeign[0]//PIXEL) + "," + str(posBeign[1]//PIXEL) + ""
+    lastDecision = "" + str(posBeign[0]//PIXEL) + "," + str(posBeign[1]//PIXEL) + "->" + str(beign.getCostT) + ""
     raiz = Node(lastDecision)
 
     reloj = pygame.time.Clock()
@@ -132,16 +126,15 @@ def main():
         if(Decision > 2):
             d = "d"
             if flagChild == False:
-                aqui = search.find(raiz, lambda node: node.name == lastDecision)
-                Node("" + str(beign.getX // PIXEL) + "," + str(beign.getY // PIXEL) + "", parent=aqui)
+                padre = search.find(raiz, lambda node: node.name == lastDecision)
+                Node("" + str(posBeign[0]//PIXEL) + "," + str(posBeign[1]//PIXEL) + "->" + str(beign.getCostT) + "", parent=padre)
                 flagChild = True
-                lastDecision = "" + str(beign.getX // PIXEL) + "," + str(beign.getY // PIXEL) + ""
+                lastDecision = "" + str(posBeign[0]//PIXEL) + "," + str(posBeign[1]//PIXEL) + "->" + str(beign.getCostT) + ""
                 print(RenderTree(raiz))
         else:
             d = 0
 
         scene.getDarkSide()[beign.getY//PIXEL][beign.getX//PIXEL] = [Shadow,Inicio,Visited,d,Actual]
-
 
         etiqueta = pygame.mouse.get_pos()
         string = "{0}"
