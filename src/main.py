@@ -116,7 +116,7 @@ def main():
 
             if(pygame.mouse.get_pressed()[0] != 0):
                 scene.ask_terrain(screen)
-
+            
             Decision = 0
 
             if(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL) != "0"):
