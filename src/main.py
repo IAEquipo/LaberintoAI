@@ -4,15 +4,18 @@
 # Módulos
 import pygame, sys, random
 from pygame.locals import *
-
-
-#Modulos personales
-from src.GUI.Scene import *
-from src.Archivo.Archivo import *
-from src.BEIGN.Beign import *
 from anytree import Node, RenderTree, search
 
-# Constantes
+#Modulos personales
+from GUI.Scene import *
+from Archivo.Archivo import *
+from BEIGN.Beign import *
+
+
+#hios de su puta madre :v
+
+# Constantes khe me ves perro
+
 
 PIXEL = 30
 
@@ -20,10 +23,9 @@ PIXEL = 30
 
 # Funciones
 # ---------------------------------------------------------------------
-#def move(flag):
+# def move(flag):
 
-
-#def ask():
+# def ask():
 # ---------------------------------------------------------------------
 
 def main():
