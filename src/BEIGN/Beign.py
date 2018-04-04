@@ -16,6 +16,12 @@ class Beign:
                 self.costs = costs[i]
                 break
 
+    def setX(self, x):
+        self.x = x
+
+    def setY(self, y):
+        self.y = y
+
     @property
     def getX(self):
         return self.x
