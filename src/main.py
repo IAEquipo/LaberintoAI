@@ -69,32 +69,36 @@ def main():
 
         if(pygame.key.get_pressed()[pygame.K_UP]):
             if(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL)):
-                posBeignLast[0]=beign.getX//PIXEL
-                posBeignLast[1]=beign.getY//PIXEL
-                beign.UP(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL),1)
-                flagChild = False
+                if(scene.getDarkSide()[(beign.getY-PIXEL)//PIXEL][beign.getX//PIXEL][2] != 'v'):
+                    posBeignLast[0]=beign.getX//PIXEL
+                    posBeignLast[1]=beign.getY//PIXEL
+                    beign.UP(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL),1)
+                    flagChild = False
 
 
         if(pygame.key.get_pressed()[pygame.K_DOWN]):
             if(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL)):
-                posBeignLast[0]=beign.getX//PIXEL
-                posBeignLast[1]=beign.getY//PIXEL
-                beign.DOWN(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL),1)
-                flagChild = False
+                if(scene.getDarkSide()[(beign.getY+PIXEL)//PIXEL][beign.getX//PIXEL][2] != 'v'):
+                    posBeignLast[0]=beign.getX//PIXEL
+                    posBeignLast[1]=beign.getY//PIXEL
+                    beign.DOWN(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL),1)
+                    flagChild = False
 
         if(pygame.key.get_pressed()[pygame.K_RIGHT]):
             if(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL)):
-                posBeignLast[0]=beign.getX//PIXEL
-                posBeignLast[1]=beign.getY//PIXEL
-                beign.RIGHT(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL),1)
-                flagChild = False
+                if(scene.getDarkSide()[beign.getY//PIXEL][(beign.getX+PIXEL)//PIXEL][2] != 'v'):
+                    posBeignLast[0]=beign.getX//PIXEL
+                    posBeignLast[1]=beign.getY//PIXEL
+                    beign.RIGHT(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL),1)
+                    flagChild = False
 
         if(pygame.key.get_pressed()[pygame.K_LEFT]):
             if(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL)):
-                posBeignLast[0]=beign.getX//PIXEL
-                posBeignLast[1]=beign.getY//PIXEL
-                beign.LEFT(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL),1)
-                flagChild = False
+                if(scene.getDarkSide()[beign.getY//PIXEL][(beign.getX-PIXEL)//PIXEL][2] != 'v'):
+                    posBeignLast[0]=beign.getX//PIXEL
+                    posBeignLast[1]=beign.getY//PIXEL
+                    beign.LEFT(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL),1)
+                    flagChild = False
 
         scene.paint_world(screen, scene.getDarkSide(), 0)
         scene.paint_beign(screen, beign.getX, beign.getY)
