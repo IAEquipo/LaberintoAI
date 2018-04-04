@@ -40,6 +40,7 @@ def main():
     posBeign = [0, 0]
     lastDecision = "0,0->0"
     posBeignLast = [0, 0]
+    padre = None
 
     while True:
         x = (random.randrange(m-1)) * PIXEL
@@ -58,9 +59,9 @@ def main():
     scene.getDarkSide()[beign.getY//PIXEL][beign.getX//PIXEL][3] ="d"
     reloj = pygame.time.Clock()
     Temp = 0
-    padre = None
 
     while True:
+
         for evento in pygame.event.get():
             if evento.type == QUIT:
                 pygame.quit()
@@ -71,17 +72,7 @@ def main():
             scene.change_terrain()
             scene.paint_world(screen, matrix, 1)
 
-        if((beign.getY+PIXEL < scene.getDimensions()[1]) and (scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL) != '0') and (scene.getDarkSide()[(beign.getY+PIXEL)//PIXEL][beign.getX//PIXEL][2] != 'v')):
-            print("Te la meti Abajo: ")
-            posBeignLast[0]=beign.getX//PIXEL
-            posBeignLast[1]=beign.getY//PIXEL
-            beign.DOWN(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL),1)
-            flagChild = False
-        else:
-            Temp += 1
-
         if((beign.getY-PIXEL > 0) and (scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL) != '0') and (scene.getDarkSide()[(beign.getY-PIXEL)//PIXEL][beign.getX//PIXEL][2] != 'v')):
-            print("Te la meti arriba: ")
             posBeignLast[0]=beign.getX//PIXEL
             posBeignLast[1]=beign.getY//PIXEL
             beign.UP(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL),1)
@@ -89,8 +80,15 @@ def main():
         else:
             Temp += 1
 
+        if((beign.getY+PIXEL < scene.getDimensions()[1]) and (scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL) != '0') and (scene.getDarkSide()[(beign.getY+PIXEL)//PIXEL][beign.getX//PIXEL][2] != 'v')):
+            posBeignLast[0]=beign.getX//PIXEL
+            posBeignLast[1]=beign.getY//PIXEL
+            beign.DOWN(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL),1)
+            flagChild = False
+        else:
+            Temp += 1
+
         if((beign.getX+PIXEL < scene.getDimensions()[0]) and (scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL) != '0') and (scene.getDarkSide()[beign.getY//PIXEL][(beign.getX+PIXEL)//PIXEL][2] != 'v')):
-            print("Te la meti Derecha: ")
             posBeignLast[0]=beign.getX//PIXEL
             posBeignLast[1]=beign.getY//PIXEL
             beign.RIGHT(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL),1)
@@ -99,7 +97,6 @@ def main():
             Temp += 1
 
         if((beign.getX-PIXEL > 0) and (scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL) != '0') and (scene.getDarkSide()[beign.getY//PIXEL][(beign.getX-PIXEL)//PIXEL][2] != 'v')):
-            print("Te la meti izquierda: ")
             posBeignLast[0]=beign.getX//PIXEL
             posBeignLast[1]=beign.getY//PIXEL
             beign.LEFT(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL),1)
@@ -107,27 +104,30 @@ def main():
         else:
             Temp += 1
 
-        print("Temp: " + str(Temp))
-
         if(Temp == 4):
             Temp = 0
             print("ALv PRRO ALV")
-            x = lastDecision.split(",")[0]
-            y = lastDecision.split(",")[1].split("->")[0]
+            if(lastDecision == None):
+                x = inicial[0]
+                y = inicial[1]
+            else:
+                x = lastDecision.split(",")[0]
+                y = lastDecision.split(",")[1].split("->")[0]
             beign.setX(int(x)*PIXEL)
             beign.setY(int(y)*PIXEL)
-            aux = str(padre.parent).split("/")[-1][:-2]
-            lastDecision = aux
-            print(lastDecision)
+            if(padre != None ):
+                aux = str(padre).split("/")[-1][:-2]
+                lastDecision = aux
+            else:
+                lastDecision = "" + str(inicial[0]//PIXEL) + "," + str(inicial[1]//PIXEL) + "->0"
+
 
         else:
             Temp = 0
-            scene.paint_world(screen, scene.getDarkSide(), 0)
-            scene.paint_beign(screen, beign.getX, beign.getY)
 
             if(pygame.mouse.get_pressed()[0] != 0):
                 scene.ask_terrain(screen)
-            
+
             Decision = 0
 
             if(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL) != "0"):
@@ -149,10 +149,14 @@ def main():
                 d = "d"
                 if flagChild == False:
                     padre = search.find(raiz, lambda node: node.name == lastDecision)
+                    if(padre.parent == None):
+                        padre = raiz
+                    elif(padre == None):
+                        pass
                     Node("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "", parent=padre)
                     flagChild = True
                     lastDecision = "" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + ""
-                    #print(RenderTree(raiz))
+                    print(RenderTree(raiz))
             else:
                 d = 0
 
@@ -166,6 +170,8 @@ def main():
         if (etiqueta[0] <= scene.getDimensions()[0] and etiqueta[1] <= scene.getDimensions()[1]):
             scene.displayInfo(screen, string.format(scene.getDarkSide()[etiqueta[1]//PIXEL][etiqueta[0]//PIXEL]))
 
+        scene.paint_world(screen, scene.getDarkSide(), 0)
+        scene.paint_beign(screen, beign.getX, beign.getY)
         pygame.display.flip()
         reloj.tick(1)
 
