@@ -141,6 +141,8 @@ class Scene:
             return False
 
     def askDOWN(self,beignX,beignY):
+        print("D:" + str(self.dimensions[1]//PIXEL))
+        print("Y:" + str(beignY+1))
         if (beignY + 1) != (self.dimensions[1]//PIXEL):
             if(self.world[beignY+1][beignX] != 0):
                 return self.world[beignY+1][beignX]

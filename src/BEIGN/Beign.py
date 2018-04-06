@@ -46,7 +46,8 @@ class Beign:
     def DOWN(self, map, flag):
         if self.costs[int(map) + 1] != 'X':
             if flag == 1:
-                self.y = self.y+PIXEL
+                self.y += PIXEL
+                print("creo" + str(self.y))
                 self.costT = self.costT + int(self.costs[int(map) + 1])
             elif flag == 0:
                 return 0
