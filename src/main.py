@@ -46,6 +46,9 @@ def main():
         x = (random.randrange(m-1)) * PIXEL
         y = (random.randrange(n-1)) * PIXEL
 
+        x = 4 * PIXEL
+        y = 3 * PIXEL
+
         posBeign[0] = x
         posBeign[1] = y
 
@@ -149,6 +152,7 @@ def main():
                 d = "d"
                 if flagChild == False:
                     padre = search.find(raiz, lambda node: node.name == lastDecision)
+                    print(padre)
                     if(padre.parent == None):
                         padre = raiz
                     elif(padre == None):
