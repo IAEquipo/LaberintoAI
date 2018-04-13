@@ -133,33 +133,63 @@ class Scene:
         if ((y//PIXEL)+1 < self.dimensions[1]//PIXEL):
             self.darkside[(y//PIXEL)+1][x//PIXEL][0] = self.world[(y//PIXEL)+1][x//PIXEL]
 
-    def askUP(self,beignX,beignY):
+    def askUP(self,beignX,beignY, flag):
         if (beignY - 1) >= 0:
-            if(self.world[beignY-1][beignX] != 0):
-                return self.world[beignY-1][beignX]
+            if(self.world[beignY-1][beignX] != '0'):
+                if flag:
+                    return True
+                else:
+                    if(self.darkside[beignY-1][beignX][2] != 'v'):
+                        return True
+                    else:
+                        return False
+            else:
+                return False
         else:
             return False
 
-    def askDOWN(self,beignX,beignY):
-        print("D:" + str(self.dimensions[1]//PIXEL))
-        print("Y:" + str(beignY+1))
-        if (beignY + 1) != (self.dimensions[1]//PIXEL):
-            if(self.world[beignY+1][beignX] != 0):
-                return self.world[beignY+1][beignX]
+    def askDOWN(self,beignX,beignY, flag):
+        if (beignY + 1) < (self.dimensions[1]//PIXEL):
+            if(self.world[beignY+1][beignX] != '0'):
+                if flag:
+                    return True
+                else:
+                    if self.darkside[beignY+1][beignX][2] != 'v':
+                        return True
+                    else:
+                        return False
+            else:
+                return False
         else:
             return False
 
-    def askLEFT(self,beignX,beignY):
+    def askLEFT(self,beignX,beignY, flag):
         if (beignX - 1) >= 0:
-            if(self.world[beignY][beignX-1] != 0):
-                return self.world[beignY][beignX-1]
+            if(self.world[beignY][beignX-1] != '0'):
+                if flag:
+                    return True
+                else:
+                    if self.darkside[beignY][beignX-1][2] != 'v':
+                        return True
+                    else:
+                        return False
+            else:
+                return False
         else:
             return False
 
-    def askRIGHT(self,beignX,beignY):
-        if (beignX + 1) != (self.dimensions[0]//PIXEL):
-            if(self.world[beignY][beignX+1] != 0):
-                return self.world[beignY][beignX+1]
+    def askRIGHT(self,beignX,beignY, flag):
+        if (beignX + 1) < (self.dimensions[0]//PIXEL):
+            if(self.world[beignY][beignX+1] != '0'):
+                if flag:
+                    return True
+                else:
+                    if self.darkside[beignY][beignX+1][2] != 'v':
+                        return True
+                    else:
+                        return False
+            else:
+                return False
         else:
             return False
 
