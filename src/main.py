@@ -43,8 +43,8 @@ def main():
         x = (random.randrange(m-1)) * PIXEL
         y = (random.randrange(n-1)) * PIXEL
 
-        #x = 4 * PIXEL
-        #y = 3 * PIXEL
+        x = 3 * PIXEL
+        y = 3 * PIXEL
 
         posBeign[0] = x
         posBeign[1] = y
@@ -73,26 +73,24 @@ def main():
             scene.change_terrain()
             scene.paint_world(screen, matrix, 1)
 
+        print("1. {}".format(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL,0)))
         if(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL,0)):
             beign.LEFT(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL,0),1)
-            flagChild = False
-            back = False
+            flagChild = True
         elif(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL,0)):
             beign.UP(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL,0),1)
-            flagChild = False
-            back = False
+            flagChild = True
         elif(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL,0)):
             beign.DOWN(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL,0),1)
-            flagChild = False
-            back = False
+            flagChild = True
         elif(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL,0)):
             beign.RIGHT(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL,0),1)
-            flagChild = False
-            back = False
+            flagChild = True
         else:
             Temp = 4
-
+        print("Temp: {}".format(Temp))
         if(Temp == 4):
+            """
             Temp = 0
             if(padre == raiz):
                 while(1):
@@ -109,7 +107,7 @@ def main():
                 y = str(padre).split("/")[-1].split(",")[1].split("->")[0]
                 beign.setX(int(x)*PIXEL)
                 beign.setY(int(y)*PIXEL)
-                back = True
+                back = True"""
 
         else:
             Temp = 0
@@ -118,26 +116,38 @@ def main():
                 scene.ask_terrain(screen)
 
             Decision = 0
+            print("L: {}".format(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL,1)))
             if(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL,1)):
                 Decision = Decision + 1
 
+            print("U: {}".format(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL,1)))
             if(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL,1)):
                 Decision = Decision + 1
 
+            print("D: {}".format(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL,1)))
             if(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL,1)):
                 Decision = Decision + 1
 
+            print("R: {}".format(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL,1)))
             if(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL,1)):
                 Decision = Decision + 1
 
             Actual = "a"
             Shadow = scene.getDarkSide()[beign.getY//PIXEL][beign.getX//PIXEL][0]
 
+            print("Decision: {}".format(Decision))
             if(Decision > 2 or Decision == 1):
                 d = "d"
-                if (flagChild == False):
-                    padre = Node("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "", parent=padre)
-                    flagChild = True
+                print("Flag Child: {}".format(flagChild))
+                if (flagChild == True):
+                    flagChild = False
+                    hijo = Node("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "", parent=padre)
+                    padre = hijo.parent
+                    x = str(padre).split("/")[-1].split(",")[0]
+                    y = str(padre).split("/")[-1].split(",")[1].split("->")[0]
+                    beign.setX(int(x)*PIXEL)
+                    beign.setY(int(y)*PIXEL)
+                    beign.setCostT(str(padre).split("/")[-1].split(",")[1].split("->")[1].split("'")[0])
                     print(RenderTree(raiz))
             else:
                 d = 0
