@@ -43,8 +43,8 @@ def main():
         x = (random.randrange(m-1)) * PIXEL
         y = (random.randrange(n-1)) * PIXEL
 
-        x = 4 * PIXEL
-        y = 3 * PIXEL
+        #x = 4 * PIXEL
+        #y = 3 * PIXEL
 
         posBeign[0] = x
         posBeign[1] = y
