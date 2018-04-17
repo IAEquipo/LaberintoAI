@@ -24,6 +24,7 @@ PIXEL = 30
 # ---------------------------------------------------------------------
 
 def main():
+    back = False
     text = Archivo()
     matrix = text.read('file.txt')
     BD_Char = Archivo()
@@ -43,8 +44,8 @@ def main():
         x = (random.randrange(m-1)) * PIXEL
         y = (random.randrange(n-1)) * PIXEL
 
-        x = 3 * PIXEL
-        y = 3 * PIXEL
+        #x = 3 * PIXEL
+        #y = 3 * PIXEL
 
         posBeign[0] = x
         posBeign[1] = y
@@ -63,6 +64,7 @@ def main():
     scene.paint_beign(screen, beign.getX, beign.getY)
 
     while True:
+        print("x: {}\ty: {}".format(beign.getX//PIXEL, beign.getY//PIXEL))
         for evento in pygame.event.get():
             if evento.type == QUIT:
                 pygame.quit()
@@ -73,24 +75,33 @@ def main():
             scene.change_terrain()
             scene.paint_world(screen, matrix, 1)
 
-        print("1. {}".format(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL,0)))
+        if(back):
+            x = str(padre).split("/")[-1].split(",")[0]
+            y = str(padre).split("/")[-1].split(",")[1].split("->")[0]
+            beign.setX(int(x)*PIXEL)
+            beign.setY(int(y)*PIXEL)
+            beign.setCostT(str(padre).split("/")[-1].split(",")[1].split("->")[1].split("'")[0])
+
+        #print("1. {}".format(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL,0)))
         if(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL,0)):
             beign.LEFT(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL,0),1)
+            back = False
             flagChild = True
-        elif(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL,0)):
+        if(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL,0)):
             beign.UP(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL,0),1)
+            back = False
             flagChild = True
-        elif(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL,0)):
+        if(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL,0)):
             beign.DOWN(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL,0),1)
+            back = False
             flagChild = True
-        elif(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL,0)):
+        if(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL,0)):
             beign.RIGHT(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL,0),1)
+            back = False
             flagChild = True
         else:
-            Temp = 4
-        print("Temp: {}".format(Temp))
+            Temp == 4
         if(Temp == 4):
-            """
             Temp = 0
             if(padre == raiz):
                 while(1):
@@ -107,48 +118,45 @@ def main():
                 y = str(padre).split("/")[-1].split(",")[1].split("->")[0]
                 beign.setX(int(x)*PIXEL)
                 beign.setY(int(y)*PIXEL)
-                back = True"""
+                back = True
 
         else:
-            Temp = 0
-
             if(pygame.mouse.get_pressed()[0] != 0):
                 scene.ask_terrain(screen)
 
             Decision = 0
-            print("L: {}".format(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL,1)))
+            #print("L: {}".format(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL,1)))
             if(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL,1)):
                 Decision = Decision + 1
 
-            print("U: {}".format(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL,1)))
+            #print("U: {}".format(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL,1)))
             if(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL,1)):
                 Decision = Decision + 1
 
-            print("D: {}".format(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL,1)))
+            #print("D: {}".format(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL,1)))
             if(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL,1)):
                 Decision = Decision + 1
 
-            print("R: {}".format(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL,1)))
+            #print("R: {}".format(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL,1)))
             if(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL,1)):
                 Decision = Decision + 1
 
             Actual = "a"
             Shadow = scene.getDarkSide()[beign.getY//PIXEL][beign.getX//PIXEL][0]
 
-            print("Decision: {}".format(Decision))
-            if(Decision > 2 or Decision == 1):
+            #print("Decision: {}".format(Decision))
+            if(Decision > 2):
                 d = "d"
-                print("Flag Child: {}".format(flagChild))
                 if (flagChild == True):
                     flagChild = False
                     hijo = Node("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "", parent=padre)
-                    padre = hijo.parent
-                    x = str(padre).split("/")[-1].split(",")[0]
-                    y = str(padre).split("/")[-1].split(",")[1].split("->")[0]
-                    beign.setX(int(x)*PIXEL)
-                    beign.setY(int(y)*PIXEL)
-                    beign.setCostT(str(padre).split("/")[-1].split(",")[1].split("->")[1].split("'")[0])
-                    print(RenderTree(raiz))
+                    padre  = hijo.parent
+                    back = True
+                    #print(RenderTree(raiz))
+            elif(Decision == 1):
+                hijo = Node("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "", parent=padre)
+                padre = hijo.parent
+                back = True
             else:
                 d = 0
 
@@ -166,6 +174,7 @@ def main():
             scene.displayInfo(screen, string.format(scene.getDarkSide()[etiqueta[1]//PIXEL][etiqueta[0]//PIXEL]))
         pygame.display.flip()
         reloj.tick(1)
+        time.sleep(1)
 
 
 if __name__ == '__main__':

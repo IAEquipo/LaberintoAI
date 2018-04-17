@@ -151,9 +151,9 @@ class Scene:
             return False
 
     def askDOWN(self,beignX,beignY, flag):
-        print("bx: {}, by:{}".format(beignX, beignY))
+        #print("bx: {}, by:{}".format(beignX, beignY))
         if (beignY + 1) < (self.dimensions[1]//PIXEL):
-            print("aD: {}".format(self.world[beignY+1][beignX]))
+            #print("aD: {}".format(self.world[beignY+1][beignX]))
             if(self.world[beignY+1][beignX] != '0'):
                 if flag:
                     return True
@@ -168,9 +168,9 @@ class Scene:
             return False
 
     def askLEFT(self,beignX,beignY, flag):
-        print("bx: {}, by:{}".format(beignX, beignY))
+        #print("bx: {}, by:{}".format(beignX, beignY))
         if (beignX - 1) >= 0:
-            print("aL: {}".format(self.world[beignY][beignX-1]))
+            #print("aL: {}".format(self.world[beignY][beignX-1]))
             if(self.world[beignY][beignX-1] != '0'):
                 if flag:
                     return True
@@ -185,9 +185,9 @@ class Scene:
             return False
 
     def askRIGHT(self,beignX,beignY, flag):
-        print("bx: {}, by:{}".format(beignX, beignY))
+        #print("bx: {}, by:{}".format(beignX, beignY))
         if (beignX + 1) < (self.dimensions[0]//PIXEL):
-            print("aR: {}".format(self.world[beignY][beignX+1]))
+            #print("aR: {}".format(self.world[beignY][beignX+1]))
             if(self.world[beignY][beignX+1] != '0'):
                 if flag:
                     return True
