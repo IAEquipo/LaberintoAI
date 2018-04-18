@@ -63,6 +63,10 @@ def main():
     scene.paint_beign(screen, beign.getX, beign.getY)
 
     while True:
+
+        if(pygame.mouse.get_pressed()[0] != 0):
+            scene.ask_terrain(screen)
+
         for evento in pygame.event.get():
             if evento.type == QUIT:
                 pygame.quit()
@@ -90,10 +94,6 @@ def main():
             flagChild = False
             back = False
         else:
-            Temp = 4
-
-        if(Temp == 4):
-            Temp = 0
             if(padre == raiz):
                 while(1):
                     pass
@@ -111,42 +111,37 @@ def main():
                 beign.setY(int(y)*PIXEL)
                 back = True
 
+
+        Decision = 0
+        if(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL,1)):
+            Decision = Decision + 1
+
+        if(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL,1)):
+            Decision = Decision + 1
+
+        if(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL,1)):
+            Decision = Decision + 1
+
+        if(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL,1)):
+            Decision = Decision + 1
+
+        Actual = "a"
+        Shadow = scene.getDarkSide()[beign.getY//PIXEL][beign.getX//PIXEL][0]
+
+        if(Decision > 2 or Decision == 1):
+            d = "d"
+            if (flagChild == False):
+                padre = Node("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "", parent=padre)
+                flagChild = True
+                print(RenderTree(raiz))
         else:
-            Temp = 0
+            d = 0
 
-            if(pygame.mouse.get_pressed()[0] != 0):
-                scene.ask_terrain(screen)
+        scene.getDarkSide()[beign.getY//PIXEL][beign.getX//PIXEL] = [Shadow,0,"v",d,Actual]
 
-            Decision = 0
-            if(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL,1)):
-                Decision = Decision + 1
-
-            if(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL,1)):
-                Decision = Decision + 1
-
-            if(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL,1)):
-                Decision = Decision + 1
-
-            if(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL,1)):
-                Decision = Decision + 1
-
-            Actual = "a"
-            Shadow = scene.getDarkSide()[beign.getY//PIXEL][beign.getX//PIXEL][0]
-
-            if(Decision > 2 or Decision == 1):
-                d = "d"
-                if (flagChild == False):
-                    padre = Node("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "", parent=padre)
-                    flagChild = True
-                    print(RenderTree(raiz))
-            else:
-                d = 0
-
-            scene.getDarkSide()[beign.getY//PIXEL][beign.getX//PIXEL] = [Shadow,0,"v",d,Actual]
-
-            scene.getDarkSide()[inicial[1]//PIXEL][inicial[0]//PIXEL][1]="i"
-            scene.getDarkSide()[inicial[1]//PIXEL][inicial[0]//PIXEL][3]="d"
-            scene.getDarkSide()[inicial[1]//PIXEL][inicial[0]//PIXEL][2]="v"
+        scene.getDarkSide()[inicial[1]//PIXEL][inicial[0]//PIXEL][1]="i"
+        scene.getDarkSide()[inicial[1]//PIXEL][inicial[0]//PIXEL][3]="d"
+        scene.getDarkSide()[inicial[1]//PIXEL][inicial[0]//PIXEL][2]="v"
 
         scene.paint_world(screen, scene.getDarkSide(), 0)
         scene.paint_beign(screen, beign.getX, beign.getY)
