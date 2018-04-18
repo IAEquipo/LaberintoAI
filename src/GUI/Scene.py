@@ -134,9 +134,9 @@ class Scene:
             self.darkside[(y//PIXEL)+1][x//PIXEL][0] = self.world[(y//PIXEL)+1][x//PIXEL]
 
     def askUP(self,beignX,beignY, flag):
-        print("bx: {}, by:{}".format(beignX, beignY))
+        #print("bx: {}, by:{}".format(beignX, beignY))
         if (beignY - 1) >= 0:
-            print("aU: {}".format(self.world[beignY-1][beignX]))
+            #print("aU: {}".format(self.world[beignY-1][beignX]))
             if(self.world[beignY-1][beignX] != '0'):
                 if flag:
                     return True
