@@ -15,6 +15,8 @@ from BEIGN.Beign import *
 
 # Constantes
 PIXEL = 30
+p = 1
+inc = 2
 # definiciones globales
 
 
@@ -59,7 +61,7 @@ beign = Beign('Human', posBeign[0], posBeign[1], costs)
 # ---------------------------------------------------------------------
 
 def anchura(nodo):
-    i = 0
+    iterador = inc
     x = str(nodo).split("/")[-1].split(",")[0]
     y = str(nodo).split("/")[-1].split(",")[1].split("->")[0]
     beign.setX(int(x)*PIXEL)
@@ -92,6 +94,7 @@ def anchura(nodo):
 
         if(back):
             #print(padre)
+            iterador += 1
             flagChild = False
             try:
                 x = str(padre).split("/")[-1].split(",")[0]
@@ -201,10 +204,12 @@ def anchura(nodo):
                     #print("cad: {}".format("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + ""))
                     if(("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "") != aux):
                         padre = Node("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "", parent=padre)
-                        padre  = padre.parent
+                        iterador -= 1
+                        if iterador == 0:
+                            padre = padre.parent
+                            back = True
+                            forward = False
                         #print("D2 -> 2:{}".format(padre))
-                back = True
-                forward = False
                 #print(RenderTree(raiz))
         elif(Decision == 1 and not padre.is_root):
             d = 0
@@ -219,9 +224,10 @@ def anchura(nodo):
                     if(("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "") != aux):
                         padre = Node("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "", parent=padre)
                         padre = padre.parent
+                        iterador -= 1
                         #print("D1 -> 2:{}".format(padre))
-                back = True
-                forward = False
+                        back = True
+                        forward = False
                 #print(RenderTree(nodo))
         else:
             d = 0
@@ -238,13 +244,14 @@ def anchura(nodo):
         string = "{0}"
         if (etiqueta[0] <= scene.getDimensions()[0] and etiqueta[1] <= scene.getDimensions()[1]):
             scene.displayInfo(screen, string.format(scene.getDarkSide()[etiqueta[1]//PIXEL][etiqueta[0]//PIXEL]))
-        i += 1
+
         pygame.display.flip()
-        reloj.tick(10)
+        reloj.tick(15)
 
 
 
 def main():
+    iterador = p
     back = False
     forward = True
     #i = 0
@@ -279,6 +286,8 @@ def main():
             beign.setY(int(y)*PIXEL)
             beign.setCostT(str(padre).split("/")[-1].split(",")[1].split("->")[1].split("'")[0])
             flagChild = False
+            iterador += 1
+
             #print(" Regresa x: {}\ty: {}".format(beign.getX//PIXEL, beign.getY//PIXEL))
 
         #print("1. {}".format(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL,0)))
@@ -358,15 +367,19 @@ def main():
             d = "d"
             if (flagChild == True):
                 flagChild = False
-                hijo = Node("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "", parent=padre)
-                padre  = hijo.parent
-                back = True
+                padre = Node("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "", parent=padre)
+                iterador -= 1
+                if iterador == 0:
+                    padre = padre.parent
+                    back = True
+
                 #print(RenderTree(raiz))
         elif(Decision == 1):
             d = 0
             hijo = Node("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "", parent=padre)
             padre = hijo.parent
             back = True
+            iterador -= 1
             #print(RenderTree(raiz))
         else:
             d = 0
@@ -385,7 +398,7 @@ def main():
             scene.displayInfo(screen, string.format(scene.getDarkSide()[etiqueta[1]//PIXEL][etiqueta[0]//PIXEL]))
         #i += 1
         pygame.display.flip()
-        reloj.tick(10)
+        reloj.tick(15)
 
 
 if __name__ == '__main__':
