@@ -246,7 +246,7 @@ def anchura(nodo):
             scene.displayInfo(screen, string.format(scene.getDarkSide()[etiqueta[1]//PIXEL][etiqueta[0]//PIXEL]))
 
         pygame.display.flip()
-        reloj.tick(1)
+        reloj.tick(15)
 
 
 
@@ -399,7 +399,7 @@ def main():
             scene.displayInfo(screen, string.format(scene.getDarkSide()[etiqueta[1]//PIXEL][etiqueta[0]//PIXEL]))
         #i += 1
         pygame.display.flip()
-        reloj.tick(1)
+        reloj.tick(15)
 
 
 if __name__ == '__main__':
