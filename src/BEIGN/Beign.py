@@ -22,6 +22,9 @@ class Beign:
     def setY(self, y):
         self.y = y
 
+    def setCostT(self, valor):
+        self.costT = int(valor)
+
     @property
     def getX(self):
         return self.x
@@ -46,7 +49,7 @@ class Beign:
     def DOWN(self, map, flag):
         if self.costs[int(map) + 1] != 'X':
             if flag == 1:
-                self.y = self.y+PIXEL
+                self.y += PIXEL
                 self.costT = self.costT + int(self.costs[int(map) + 1])
             elif flag == 0:
                 return 0
