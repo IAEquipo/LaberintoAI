@@ -15,8 +15,6 @@ from BEIGN.Beign import *
 
 # Constantes
 PIXEL = 30
-PROFUNDIDAD = 2
-inc = 1
 # definiciones globales
 
 
@@ -51,7 +49,6 @@ while True:
 inicial = [x,y]
 beign = Beign('Human', posBeign[0], posBeign[1], costs)
 
-
 # ---------------------------------------------------------------------
 
 # Funciones
@@ -61,9 +58,8 @@ beign = Beign('Human', posBeign[0], posBeign[1], costs)
 # def ask():
 # ---------------------------------------------------------------------
 
-def profundidadIter(nodo):
-    #i = 0
-    iter = inc
+def anchura(nodo):
+    i = 0
     x = str(nodo).split("/")[-1].split(",")[0]
     y = str(nodo).split("/")[-1].split(",")[1].split("->")[0]
     beign.setX(int(x)*PIXEL)
@@ -77,7 +73,6 @@ def profundidadIter(nodo):
     #print("Nodo raiz de anchura: {}".format(padre))
 
     while(True):
-        print("Iter: {}".format(iter))
         #print("Iteracion: {}".format(i))
         if(pygame.mouse.get_pressed()[0] != 0):
             scene.ask_terrain(screen)
@@ -94,14 +89,6 @@ def profundidadIter(nodo):
         if(pygame.mouse.get_pressed()[2] != 0):
             scene.change_terrain()
             scene.paint_world(screen, matrix, 1)
-
-        if(iter <= 0):
-            iter = inc
-            x = str(padre).split("/")[-1].split(",")[0]
-            y = str(padre).split("/")[-1].split(",")[1].split("->")[0]
-            beign.setX(int(x)*PIXEL)
-            beign.setY(int(y)*PIXEL)
-            beign.setCostT(str(padre).split("/")[-1].split(",")[1].split("->")[1].split("'")[0])
 
         if(back):
             #print(padre)
@@ -150,18 +137,16 @@ def profundidadIter(nodo):
             beign.setY(int(y)*PIXEL)
             beign.setCostT(str(padre).split("/")[-1].split(",")[1].split("->")[1].split("'")[0])
 
-
-            if(forward and iter == 0):
+            if(forward):
                 for i in range(len(padre.children)):
                     #print("for de main: {}".format(i))
                     forward = True
-                    profundidadIter(padre.children[i])
+                    anchura(padre.children[i])
                 forward = False
                 back = True
             elif(padre.is_root):
                 return
-            elif(back and iter > 0):
-                iter += 1
+            elif(back):
                 padre = padre.parent
                 x = str(padre).split("/")[-1].split(",")[0]
                 y = str(padre).split("/")[-1].split(",")[1].split("->")[0]
@@ -204,7 +189,7 @@ def profundidadIter(nodo):
 
         #print("Decision: {}".format(Decision))
         #print("is_root: {}".format(padre.is_root))
-        if(Decision > 2 and iter > 0):
+        if(Decision > 2):
             d = "d"
             if (flagChild == True):
                 flagChild = False
@@ -214,18 +199,12 @@ def profundidadIter(nodo):
                     aux = str(padre).split("/")[-1].split("->")[0]
                     #print("aux: {}".format(aux))
                     #print("cad: {}".format("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + ""))
-                    if(("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "") != aux and iter != 0):
+                    if(("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "") != aux):
                         padre = Node("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "", parent=padre)
                         padre  = padre.parent
-                        iter -= 1
-                        #print("D1 -> 2:{}".format(padre))
-                        if iter == 0:
-                            back = True
-                            forward = False
-                        else:
-                            back = False
-                            forward = True
-
+                        #print("D2 -> 2:{}".format(padre))
+                back = True
+                forward = False
                 #print(RenderTree(raiz))
         elif(Decision == 1 and not padre.is_root):
             d = 0
@@ -237,10 +216,12 @@ def profundidadIter(nodo):
                     aux = str(padre).split("/")[-1].split("->")[0]
                     #print("aux: {}".format(aux))
                     #print("cad: {}".format("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + ""))
-                    if(("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "") != aux and iter != 0):
+                    if(("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "") != aux):
                         padre = Node("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "", parent=padre)
                         padre = padre.parent
-
+                        #print("D1 -> 2:{}".format(padre))
+                back = True
+                forward = False
                 #print(RenderTree(nodo))
         else:
             d = 0
@@ -257,13 +238,13 @@ def profundidadIter(nodo):
         string = "{0}"
         if (etiqueta[0] <= scene.getDimensions()[0] and etiqueta[1] <= scene.getDimensions()[1]):
             scene.displayInfo(screen, string.format(scene.getDarkSide()[etiqueta[1]//PIXEL][etiqueta[0]//PIXEL]))
-        #i += 1
+        i += 1
         pygame.display.flip()
         reloj.tick(1)
 
 
+
 def main():
-    p = PROFUNDIDAD
     back = False
     forward = True
     #i = 0
@@ -290,15 +271,8 @@ def main():
         if(pygame.mouse.get_pressed()[2] != 0):
             scene.change_terrain()
             scene.paint_world(screen, matrix, 1)
-        if(p <= 0):
-            p = PROFUNDIDAD
-            padre = raiz
-            x = str(padre).split("/")[-1].split(",")[0]
-            y = str(padre).split("/")[-1].split(",")[1].split("->")[0]
-            beign.setX(int(x)*PIXEL)
-            beign.setY(int(y)*PIXEL)
-            beign.setCostT(str(padre).split("/")[-1].split(",")[1].split("->")[1].split("'")[0])
-        elif(back):
+
+        if(back):
             #print(padre)
             x = str(padre).split("/")[-1].split(",")[0]
             y = str(padre).split("/")[-1].split(",")[1].split("->")[0]
@@ -338,14 +312,13 @@ def main():
             if(padre.is_root):
                 #print(padre.children)
                 for i in range(len(padre.children)):
-                    print("for de main: {}".format(i))
+                    #print("for de main: {}".format(i))
                     forward = True
-                    profundidadIter(padre.children[i])
+                    anchura(padre.children[i])
                 print(RenderTree(raiz))
                 forward = False
-            elif(back and p > 0):
+            elif(back):
                 padre = padre.parent
-                p += 1
                 x = str(padre).split("/")[-1].split(",")[0]
                 y = str(padre).split("/")[-1].split(",")[1].split("->")[0]
                 beign.setX(int(x)*PIXEL)
@@ -382,19 +355,15 @@ def main():
         Shadow = scene.getDarkSide()[beign.getY//PIXEL][beign.getX//PIXEL][0]
 
         #print("Decision: {}".format(Decision))
-        if(Decision > 2 and p > 0):
+        if(Decision > 2):
             d = "d"
             if (flagChild == True):
                 flagChild = False
                 hijo = Node("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "", parent=padre)
-                padre  = hijo
-                p -= 1
-                if p == 0:
-                    back = True
-                else:
-                    back = False
+                padre  = hijo.parent
+                back = True
                 #print(RenderTree(raiz))
-        elif(Decision == 1 and p > 0):
+        elif(Decision == 1):
             d = 0
             hijo = Node("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "", parent=padre)
             padre = hijo.parent
