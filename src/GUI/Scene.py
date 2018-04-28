@@ -16,7 +16,7 @@ COLOR_L = (244,110,120)
 
 COLOR_BEIGN = (255, 0, 0)
 
-COLOR_LABEL = (255,0,255)
+COLOR_LABEL = (255, 255, 255)
 
 PIXEL = 30
 
@@ -134,7 +134,9 @@ class Scene:
             self.darkside[(y//PIXEL)+1][x//PIXEL][0] = self.world[(y//PIXEL)+1][x//PIXEL]
 
     def askUP(self,beignX,beignY, flag):
+        #print("bx: {}, by:{}".format(beignX, beignY))
         if (beignY - 1) >= 0:
+            #print("aU: {}".format(self.world[beignY-1][beignX]))
             if(self.world[beignY-1][beignX] != '0'):
                 if flag:
                     return True
@@ -149,7 +151,9 @@ class Scene:
             return False
 
     def askDOWN(self,beignX,beignY, flag):
+        #print("bx: {}, by:{}".format(beignX, beignY))
         if (beignY + 1) < (self.dimensions[1]//PIXEL):
+            #print("aD: {}".format(self.world[beignY+1][beignX]))
             if(self.world[beignY+1][beignX] != '0'):
                 if flag:
                     return True
@@ -164,7 +168,9 @@ class Scene:
             return False
 
     def askLEFT(self,beignX,beignY, flag):
+        #print("bx: {}, by:{}".format(beignX, beignY))
         if (beignX - 1) >= 0:
+            #print("aL: {}".format(self.world[beignY][beignX-1]))
             if(self.world[beignY][beignX-1] != '0'):
                 if flag:
                     return True
@@ -179,7 +185,9 @@ class Scene:
             return False
 
     def askRIGHT(self,beignX,beignY, flag):
+        #print("bx: {}, by:{}".format(beignX, beignY))
         if (beignX + 1) < (self.dimensions[0]//PIXEL):
+            #print("aR: {}".format(self.world[beignY][beignX+1]))
             if(self.world[beignY][beignX+1] != '0'):
                 if flag:
                     return True
