@@ -261,7 +261,6 @@ def main():
         if(pygame.mouse.get_pressed()[0] != 0):
             scene.ask_terrain(screen)
 
-        #print("x: {}\ty: {}".format(beign.getX//PIXEL, beign.getY//PIXEL))
         for evento in pygame.event.get():
             if evento.type == QUIT:
                 pygame.quit()
