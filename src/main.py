@@ -25,7 +25,7 @@ def min(nodos):
         actual = int(str(nodo).split("/")[-1].split(",")[-1].split("'")[0])
         if(actual < min):
             nodoF = nodo
-    return nodo
+    return nodoF
 
 # ---------------------------------------------------------------------
 
@@ -53,10 +53,10 @@ def main():
         y2 = (random.randrange(n-1)) * PIXEL
         x2 = (random.randrange(m-1)) * PIXEL
 
-        x1 = 0 * PIXEL
-        y1 = 0 * PIXEL
-        x2 = 10 * PIXEL
-        y2 = 14 * PIXEL
+        x1 = 6 * PIXEL
+        y1 = 6 * PIXEL
+        x2 = 5 * PIXEL
+        y2 = 5 * PIXEL
 
         posBeign[0] = x1
         posBeign[1] = y1
@@ -67,7 +67,7 @@ def main():
             break
 
     inicial = [x1,y1]
-    beign = Beign('Octopus', posBeign[0], posBeign[1], costs)
+    beign = Beign('Human', posBeign[0], posBeign[1], costs)
     distancia = abs((final[0]-inicial[0])//PIXEL + (final[1]-inicial[1])//PIXEL)
     raiz = Node(str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->0," + str(distancia))
     padre = raiz
@@ -99,7 +99,9 @@ def main():
         if(beign.getX == final[0] and beign.getY == final[1]):
             distancia = abs((final[0]-beign.getX)//PIXEL + (final[1]-beign.getY)//PIXEL)
             total = beign.getCostT + distancia
-            padre = Node(str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "," + str(total), parent=padre)
+            if (flagChild == False):
+                padre = Node(str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "," + str(total), parent=padre)
+                flagChild = True
             ruta = str(padre).split("'")[1]
             print("Ruta: \t{}".format(ruta))
             time.sleep(60)
