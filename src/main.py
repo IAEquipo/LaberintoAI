@@ -2,11 +2,13 @@
 # -*- coding: utf-8 -*-
 
 # Módulos
-import pygame, sys, random, time
+import pygame, sys, random, time, graphviz
+from subprocess import check_call
+
 from pygame.locals import *
 from anytree import Node, RenderTree
 from anytree.search import *
-from anytree.dotexport import RenderTreeGraph
+from anytree.exporter import DotExporter
 
 #Modulos personales
 from GUI.Scene import *
@@ -49,7 +51,6 @@ while True:
         break
 
 inicial = [x,y]
-beign = Beign('Human', posBeign[0], posBeign[1], costs)
 
 # ---------------------------------------------------------------------
 
@@ -66,7 +67,7 @@ def min(nodos):
 
 # ---------------------------------------------------------------------
 
-def main():
+def main(cad):
     text = Archivo()
     matrix = text.read('lab2.txt')
     BD_Char = Archivo()
@@ -99,7 +100,7 @@ def main():
             break
 
     inicial = [x1,y1]
-    beign = Beign('Human', posBeign[0], posBeign[1], costs)
+    beign = Beign(cad, posBeign[0], posBeign[1], costs)
     distancia = abs((final[0]-inicial[0])//PIXEL + (final[1]-inicial[1])//PIXEL)
     raiz = Node(str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->0," + str(distancia))
     padre = raiz
@@ -134,9 +135,10 @@ def main():
             if (flagChild == False):
                 padre = Node(str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "," + str(total), parent=padre)
                 flagChild = True
-            ruta = str(padre).split("'")[1]
-            print("Ruta: \t{}".format(ruta))
-            time.sleep(60)
+                DotExporter(raiz).to_dotfile("tree.dot")
+                check_call(['dot','-Tpng','C:/Users/libra/Documents/IPN/9no Semestre/Artificial Inteligence/Practicas/LaberintoAI/src/tree.dot','-o','C:/Users/libra/Documents/IPN/9no Semestre/Artificial Inteligence/Practicas/LaberintoAI/src/tree.png'])
+                ruta = str(padre).split("'")[1]
+                print("Ruta: \t{}".format(ruta))
             continue
         if(back):
             x = str(padre).split("/")[-1].split(",")[0]
@@ -246,4 +248,4 @@ def main():
 
 if __name__ == '__main__':
     pygame.init()
-    main()
+    main('Human')
