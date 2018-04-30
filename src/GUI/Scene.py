@@ -21,11 +21,6 @@ COLOR_LABEL = (255, 255, 255)
 PIXEL = 30
 
 
-def paint_coord(screen, x, y):
-    if x == 0 and y ==0 or x == 0 and y !=0 or x != 0 and y == 0:
-        pygame.draw.rect(screen, BLACK, (x, y, PIXEL, PIXEL))
-
-
 class Scene:
     darkside = []
     world = []
@@ -200,6 +195,16 @@ class Scene:
                 return False
         else:
             return False
+
+    def getMap(self, beignX, beignY, direction):
+        if(direction == "U"):
+            return self.world[beignY-1][beignX]
+        elif(direction == "D"):
+            return self.world[beignY+1][beignX]
+        elif(direction == "R"):
+            return self.world[beignY][beignX+1]
+        elif(direction == "L"):
+            return self.world[beignY][beignX-1]
 
     def print_darkside(self):
         i = 0
