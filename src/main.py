@@ -18,9 +18,15 @@ PIXEL = 30
 
 # Funciones
 # ---------------------------------------------------------------------
-# def move(flag):
+def min(nodos):
+    nodoF = nodos[0]
+    min = int(str(nodoF).split("/")[-1].split(",")[-1].split("'")[0])
+    for nodo in nodos:
+        actual = int(str(nodo).split("/")[-1].split(",")[-1].split("'")[0])
+        if(actual < min):
+            nodoF = nodo
+    return nodo
 
-# def ask():
 # ---------------------------------------------------------------------
 
 def main():
@@ -38,32 +44,39 @@ def main():
     scene.copy_world(m, n)
     scene.paint_world(screen, scene.getDarkSide(), 0)
     posBeign = [0, 0]
+    final = [0,0]
 
     while True:
-        x = (random.randrange(m-1)) * PIXEL
-        y = (random.randrange(n-1)) * PIXEL
+        y1 = (random.randrange(n-1)) * PIXEL
+        x1 = (random.randrange(m-1)) * PIXEL
+        y2 = (random.randrange(n-1)) * PIXEL
+        x2 = (random.randrange(m-1)) * PIXEL
 
-        x = 4 * PIXEL
-        y = 3 * PIXEL
+        posBeign[0] = x1
+        posBeign[1] = y1
+        final[0] = x2
+        final[1] = y2
 
-        posBeign[0] = x
-        posBeign[1] = y
-
-        if matrix[y//PIXEL][x//PIXEL] != "0":
+        if matrix[y1//PIXEL][x1//PIXEL] != "0" and matrix[y2//PIXEL][x2//PIXEL] != "0":
             break
 
-    inicial = [x,y]
+    inicial = [x1,y1]
     beign = Beign('Human', posBeign[0], posBeign[1], costs)
-    raiz = Node("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->0")
+    distancia = abs((final[0]-inicial[0])//PIXEL + (final[1]-inicial[1])//PIXEL)
+    raiz = Node(str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->0," + str(distancia))
     padre = raiz
+    back = False
+    open_node = []
+    close_node = []
     scene.getDarkSide()[beign.getY//PIXEL][beign.getX//PIXEL][3] ="d"
     reloj = pygame.time.Clock()
-    Temp = 0
     scene.paint_world(screen, scene.getDarkSide(), 0)
     scene.paint_beign(screen, beign.getX, beign.getY)
+    open_node.append(raiz)
+    print("inicio: {}, {}".format(inicial[0]//PIXEL, inicial[1]//PIXEL))
+    print("final: {}, {}".format(final[0]//PIXEL, final[1]//PIXEL))
 
     while True:
-
         if(pygame.mouse.get_pressed()[0] != 0):
             scene.ask_terrain(screen)
 
@@ -77,6 +90,20 @@ def main():
             scene.change_terrain()
             scene.paint_world(screen, matrix, 1)
 
+        if(beign.getX == final[0] and beign.getY == final[1]):
+            distancia = abs((final[0]-beign.getX)//PIXEL + (final[1]-beign.getY)//PIXEL)
+            total = beign.getCostT + distancia
+            padre = Node(str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "," + str(total), parent=padre)
+            ruta = str(padre).split("'")[1]
+            print("Ruta: \t{}".format(ruta))
+            time.sleep(60)
+            continue
+        if(back):
+            x = str(padre).split("/")[-1].split(",")[0]
+            y = str(padre).split("/")[-1].split(",")[1].split("->")[0]
+            beign.setX(int(x)*PIXEL)
+            beign.setY(int(y)*PIXEL)
+            beign.setCostT(str(padre).split("/")[-1].split(",")[1].split("->")[1].split("'")[0])
         if(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL,0)):
             beign.LEFT(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL,0),1)
             flagChild = False
@@ -94,23 +121,21 @@ def main():
             flagChild = False
             back = False
         else:
-            if(padre == raiz):
-                while(1):
-                    pass
-            elif(back):
-                padre = padre.parent
+            if(back):
                 x = str(padre).split("/")[-1].split(",")[0]
                 y = str(padre).split("/")[-1].split(",")[1].split("->")[0]
                 beign.setX(int(x)*PIXEL)
                 beign.setY(int(y)*PIXEL)
                 beign.setCostT(str(padre).split("/")[-1].split(",")[1].split("->")[1].split("'")[0])
+                close_node.append(padre)
+                open_node.remove(padre)
+                padre = min(open_node)
             else:
                 x = str(padre).split("/")[-1].split(",")[0]
                 y = str(padre).split("/")[-1].split(",")[1].split("->")[0]
                 beign.setX(int(x)*PIXEL)
                 beign.setY(int(y)*PIXEL)
-                back = True
-
+                beign.setCostT(str(padre).split("/")[-1].split(",")[1].split("->")[1].split("'")[0])
 
         Decision = 0
         if(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL,1)):
@@ -128,12 +153,26 @@ def main():
         Actual = "a"
         Shadow = scene.getDarkSide()[beign.getY//PIXEL][beign.getX//PIXEL][0]
 
-        if(Decision > 2 or Decision == 1):
+        if Decision > 2:
             d = "d"
             if (flagChild == False):
-                padre = Node("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "", parent=padre)
+                back = True
+                distancia = abs((final[0]-beign.getX)//PIXEL + (final[1]-beign.getY)//PIXEL)
+                total = beign.getCostT + distancia
+                padre = Node(str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "," + str(total), parent=padre)
                 flagChild = True
-                print(RenderTree(raiz))
+                open_node.append(padre)
+                padre = padre.parent
+
+        elif Decision == 1:
+            d = 0
+            if (flagChild == False):
+                back = True
+                distancia = abs((final[0]-beign.getX)//PIXEL + (final[1]-beign.getY)//PIXEL)
+                total = beign.getCostT + distancia
+                padre = Node(str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "," + str(total), parent=padre)
+                flagChild = True
+                padre = padre.parent
         else:
             d = 0
 
@@ -150,7 +189,7 @@ def main():
         if (etiqueta[0] <= scene.getDimensions()[0] and etiqueta[1] <= scene.getDimensions()[1]):
             scene.displayInfo(screen, string.format(scene.getDarkSide()[etiqueta[1]//PIXEL][etiqueta[0]//PIXEL]))
         pygame.display.flip()
-        reloj.tick(1)
+        reloj.tick(15)
 
 
 if __name__ == '__main__':
