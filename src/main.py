@@ -53,11 +53,6 @@ def main():
         y2 = (random.randrange(n-1)) * PIXEL
         x2 = (random.randrange(m-1)) * PIXEL
 
-        x1 = 6 * PIXEL
-        y1 = 6 * PIXEL
-        x2 = 5 * PIXEL
-        y2 = 5 * PIXEL
-
         posBeign[0] = x1
         posBeign[1] = y1
         final[0] = x2
