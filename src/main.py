@@ -31,7 +31,7 @@ def min(nodos):
 
 def main():
     text = Archivo()
-    matrix = text.read('file.txt')
+    matrix = text.read('lab2.txt')
     BD_Char = Archivo()
     costs = BD_Char.read('BEIGN/beigns.txt')
 
@@ -41,6 +41,7 @@ def main():
     scene = Scene(m, n)
     screen = scene.create_screen(scene.getDimensions())
     scene.paint_world(screen, matrix, 1)
+    #time.sleep(50)
     scene.copy_world(m, n)
     scene.paint_world(screen, scene.getDarkSide(), 0)
     posBeign = [0, 0]
@@ -52,6 +53,11 @@ def main():
         y2 = (random.randrange(n-1)) * PIXEL
         x2 = (random.randrange(m-1)) * PIXEL
 
+        x1 = 0 * PIXEL
+        y1 = 0 * PIXEL
+        x2 = 10 * PIXEL
+        y2 = 14 * PIXEL
+
         posBeign[0] = x1
         posBeign[1] = y1
         final[0] = x2
@@ -61,7 +67,7 @@ def main():
             break
 
     inicial = [x1,y1]
-    beign = Beign('Human', posBeign[0], posBeign[1], costs)
+    beign = Beign('Octopus', posBeign[0], posBeign[1], costs)
     distancia = abs((final[0]-inicial[0])//PIXEL + (final[1]-inicial[1])//PIXEL)
     raiz = Node(str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->0," + str(distancia))
     padre = raiz
@@ -104,20 +110,25 @@ def main():
             beign.setX(int(x)*PIXEL)
             beign.setY(int(y)*PIXEL)
             beign.setCostT(str(padre).split("/")[-1].split(",")[1].split("->")[1].split("'")[0])
-        if(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL,0)):
-            beign.LEFT(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL,0),1)
+
+        if(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL,0) and beign.LEFT(scene.getMap(beign.getX//PIXEL, beign.getY//PIXEL,"L"),0)):
+            scene.getDarkSide()[beign.getY//PIXEL][beign.getX//PIXEL][4] = 0
+            beign.LEFT(scene.getMap(beign.getX//PIXEL, beign.getY//PIXEL,"L"),1)
             flagChild = False
             back = False
-        elif(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL,0)):
-            beign.UP(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL,0),1)
+        elif(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL,0) and beign.UP(scene.getMap(beign.getX//PIXEL, beign.getY//PIXEL,"U"),0)):
+            scene.getDarkSide()[beign.getY//PIXEL][beign.getX//PIXEL][4] = 0
+            beign.UP(scene.getMap(beign.getX//PIXEL, beign.getY//PIXEL,"U"),1)
             flagChild = False
             back = False
-        elif(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL,0)):
-            beign.DOWN(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL,0),1)
+        elif(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL,0) and beign.DOWN(scene.getMap(beign.getX//PIXEL, beign.getY//PIXEL,"D"),0)):
+            scene.getDarkSide()[beign.getY//PIXEL][beign.getX//PIXEL][4] = 0
+            beign.DOWN(scene.getMap(beign.getX//PIXEL, beign.getY//PIXEL,"D"),1)
             flagChild = False
             back = False
-        elif(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL,0)):
-            beign.RIGHT(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL,0),1)
+        elif(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL,0) and beign.RIGHT(scene.getMap(beign.getX//PIXEL, beign.getY//PIXEL,"R"),0)):
+            scene.getDarkSide()[beign.getY//PIXEL][beign.getX//PIXEL][4] = 0
+            beign.RIGHT(scene.getMap(beign.getX//PIXEL, beign.getY//PIXEL,"R"),1)
             flagChild = False
             back = False
         else:
