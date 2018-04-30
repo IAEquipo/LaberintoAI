@@ -136,7 +136,7 @@ def main(cad):
                 padre = Node(str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "," + str(total), parent=padre)
                 flagChild = True
                 DotExporter(raiz).to_dotfile("tree.dot")
-                check_call(['dot','-Tpng','C:/Users/libra/Documents/IPN/9no Semestre/Artificial Inteligence/Practicas/LaberintoAI/src/tree.dot','-o','C:/Users/libra/Documents/IPN/9no Semestre/Artificial Inteligence/Practicas/LaberintoAI/src/tree.png'])
+                check_call(['dot','-Tpng','tree.dot','-o','tree.png'])
                 ruta = str(padre).split("'")[1]
                 print("Ruta: \t{}".format(ruta))
             continue
