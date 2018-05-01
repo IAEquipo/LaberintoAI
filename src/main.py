@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Módulos
-import pygame, sys, random, time, graphviz
+import pygame, sys, random, time, graphviz, threading
 from subprocess import check_call
 
 from pygame.locals import *
@@ -17,40 +17,15 @@ from BEIGN.Beign import *
 
 # Constantes
 PIXEL = 30
-p = 1
-inc = 2
 # definiciones globales
-
-
 text = Archivo()
-matrix = text.read('file.txt')
+matrix = text.read('lab2.txt')
 BD_Char = Archivo()
 costs = BD_Char.read('BEIGN/beigns.txt')
 reloj = pygame.time.Clock()
 
 m = len(matrix[0])
 n = len(matrix)-1
-
-scene = Scene(m, n)
-screen = scene.create_screen(scene.getDimensions())
-scene.paint_world(screen, matrix, 1)
-scene.copy_world(m, n)
-scene.paint_world(screen, scene.getDarkSide(), 0)
-posBeign = [0, 0]
-while True:
-    x = (random.randrange(m-1)) * PIXEL
-    y = (random.randrange(n-1)) * PIXEL
-
-    x = 3 * PIXEL
-    y = 3 * PIXEL
-
-    posBeign[0] = x
-    posBeign[1] = y
-
-    if matrix[y//PIXEL][x//PIXEL] != "0":
-        break
-
-inicial = [x,y]
 
 # ---------------------------------------------------------------------
 
@@ -67,36 +42,17 @@ def min(nodos):
 
 # ---------------------------------------------------------------------
 
-def main(cad):
-    text = Archivo()
-    matrix = text.read('lab2.txt')
-    BD_Char = Archivo()
-    costs = BD_Char.read('BEIGN/beigns.txt')
-
-    m = len(matrix[0])
-    n = len(matrix)-1
-
-    scene = Scene(m, n)
-    screen = scene.create_screen(scene.getDimensions())
-    scene.paint_world(screen, matrix, 1)
-    #time.sleep(50)
-    scene.copy_world(m, n)
-    scene.paint_world(screen, scene.getDarkSide(), 0)
+def main(cad, meta, scene, screen):
     posBeign = [0, 0]
-    final = [0,0]
-
+    final = meta
+    Final = True
     while True:
         y1 = (random.randrange(n-1)) * PIXEL
         x1 = (random.randrange(m-1)) * PIXEL
-        y2 = (random.randrange(n-1)) * PIXEL
-        x2 = (random.randrange(m-1)) * PIXEL
-
         posBeign[0] = x1
         posBeign[1] = y1
-        final[0] = x2
-        final[1] = y2
 
-        if matrix[y1//PIXEL][x1//PIXEL] != "0" and matrix[y2//PIXEL][x2//PIXEL] != "0":
+        if matrix[y1//PIXEL][x1//PIXEL] != "0":
             break
 
     inicial = [x1,y1]
@@ -108,14 +64,15 @@ def main(cad):
     open_node = []
     close_node = []
     scene.getDarkSide()[beign.getY//PIXEL][beign.getX//PIXEL][3] ="d"
-    reloj = pygame.time.Clock()
     scene.paint_world(screen, scene.getDarkSide(), 0)
     scene.paint_beign(screen, beign.getX, beign.getY)
     open_node.append(raiz)
-    print("inicio: {}, {}".format(inicial[0]//PIXEL, inicial[1]//PIXEL))
-    print("final: {}, {}".format(final[0]//PIXEL, final[1]//PIXEL))
+    print("inicio {}: {}, {}".format(cad, inicial[0]//PIXEL, inicial[1]//PIXEL))
+    print("final {}: {}, {}".format(cad, final[0]//PIXEL, final[1]//PIXEL))
 
     while True:
+        print("x: {}\ty: {}".format(beign.getX//PIXEL, beign.getY//PIXEL))
+        scene.print_darkside()
         if(pygame.mouse.get_pressed()[0] != 0):
             scene.ask_terrain(screen)
 
@@ -130,16 +87,18 @@ def main(cad):
             scene.paint_world(screen, matrix, 1)
 
         if(beign.getX == final[0] and beign.getY == final[1]):
-            distancia = abs((final[0]-beign.getX)//PIXEL + (final[1]-beign.getY)//PIXEL)
-            total = beign.getCostT + distancia
-            if (flagChild == False):
+            if (Final):
+                Final = False
+                distancia = abs((final[0]-beign.getX)//PIXEL + (final[1]-beign.getY)//PIXEL)
+                total = beign.getCostT + distancia
                 padre = Node(str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "," + str(total), parent=padre)
-                flagChild = True
-                DotExporter(raiz).to_dotfile("tree.dot")
-                check_call(['dot','-Tpng','tree.dot','-o','tree.png'])
                 ruta = str(padre).split("'")[1]
+                DotExporter(raiz).to_dotfile(str(cad)+".dot")
+                check_call(['dot','-Tpng',str(cad)+'.dot','-o',str(cad)+'.png'])
+                print(cad)
+                print(RenderTree(raiz))
                 print("Ruta: \t{}".format(ruta))
-            continue
+            return
         if(back):
             x = str(padre).split("/")[-1].split(",")[0]
             y = str(padre).split("/")[-1].split(",")[1].split("->")[0]
@@ -248,4 +207,26 @@ def main(cad):
 
 if __name__ == '__main__':
     pygame.init()
-    main('Human')
+
+    scene1 = Scene(m, n)
+    screen1 = scene1.create_screen(scene1.getDimensions())
+    scene1.paint_world(screen1, matrix, 1)
+    scene1.copy_world(m, n)
+    scene1.paint_world(screen1, scene1.getDarkSide(), 0)
+
+    scene2 = Scene(m, n)
+    screen2 = scene2.create_screen(scene2.getDimensions())
+    scene2.paint_world(screen2, matrix, 1)
+    scene2.copy_world(m, n)
+    scene2.paint_world(screen2, scene2.getDarkSide(), 0)
+
+    meta1 = [0*PIXEL,0*PIXEL]
+    meta2 = [14*PIXEL,14*PIXEL]
+    main('Octopus',meta1, scene1, screen1)
+    main('Human',meta2, scene2, screen2)
+    #h1 = threading.Thread(target=main, args=('Octopus',meta1, scene1, screen1), name='Octopus')
+    #h2 = threading.Thread(target=main, args=('Human',meta2, scene2, screen2), name='Human')
+    #h1.start()
+    #h2.start()
+    #h1.join()
+    #h2.join()
