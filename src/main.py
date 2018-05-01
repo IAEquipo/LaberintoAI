@@ -2,10 +2,14 @@
 # -*- coding: utf-8 -*-
 
 # Módulos
-import pygame, sys, random, time
+import pygame, sys, random, time, graphviz, threading
+from subprocess import check_call
+
 from pygame.locals import *
-from anytree import Node, RenderTree, search
-from anytree.dotexport import RenderTreeGraph
+from anytree import Node, RenderTree
+from anytree.search import *
+from anytree.exporter import DotExporter
+
 
 #Modulos personales
 from GUI.Scene import *
@@ -14,6 +18,7 @@ from BEIGN.Beign import *
 
 # Constantes
 PIXEL = 30
+final = [0,0]
 # ---------------------------------------------------------------------
 
 # Funciones
@@ -23,8 +28,20 @@ def min(nodos):
     min = int(str(nodoF).split("/")[-1].split(",")[-1].split("'")[0])
     for nodo in nodos:
         actual = int(str(nodo).split("/")[-1].split(",")[-1].split("'")[0])
-        if(actual < min):
+        if(actual == min):
+            XA = int(str(nodo).split("->")[-1].split(",")[0])
+            YA = int(str(nodo).split("->")[-1].split(",")[1].split("'")[0])
+            dA = YA - XA
+            XF = int(str(nodoF).split("->")[-1].split(",")[0])
+            YF = int(str(nodoF).split("->")[-1].split(",")[1].split("'")[0])
+            dF = YF - XF
+            if(dA == dF):
+                pass
+            elif(dA < dF):
+                nodoF = nodo
+        elif(actual < min):
             nodoF = nodo
+            min = actual
     return nodoF
 
 # ---------------------------------------------------------------------
@@ -45,7 +62,7 @@ def main():
     scene.copy_world(m, n)
     scene.paint_world(screen, scene.getDarkSide(), 0)
     posBeign = [0, 0]
-    final = [0,0]
+    Final = True
 
     while True:
         y1 = (random.randrange(n-1)) * PIXEL
@@ -53,6 +70,10 @@ def main():
         y2 = (random.randrange(n-1)) * PIXEL
         x2 = (random.randrange(m-1)) * PIXEL
 
+        x1 = 5 * PIXEL
+        y1 = 3 * PIXEL
+        x2 = 6 * PIXEL
+        y2 = 7 * PIXEL
         posBeign[0] = x1
         posBeign[1] = y1
         final[0] = x2
@@ -92,14 +113,16 @@ def main():
             scene.paint_world(screen, matrix, 1)
 
         if(beign.getX == final[0] and beign.getY == final[1]):
-            distancia = abs((final[0]-beign.getX)//PIXEL + (final[1]-beign.getY)//PIXEL)
-            total = beign.getCostT + distancia
-            if (flagChild == False):
+            if (Final):
+                Final = False
+                distancia = abs((final[0]-beign.getX)//PIXEL + (final[1]-beign.getY)//PIXEL)
+                total = beign.getCostT + distancia
                 padre = Node(str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "," + str(total), parent=padre)
-                flagChild = True
-            ruta = str(padre).split("'")[1]
-            print("Ruta: \t{}".format(ruta))
-            time.sleep(60)
+                ruta = str(padre).split("'")[1]
+                DotExporter(raiz).to_dotfile("Tree.dot")
+                check_call(['dot','-Tpng','Tree.dot','-o','Tree.png'])
+                print(RenderTree(raiz))
+                print("Ruta: \t{}".format(ruta))
             continue
         if(back):
             x = str(padre).split("/")[-1].split(",")[0]
