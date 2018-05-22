@@ -70,10 +70,6 @@ def main():
         y2 = (random.randrange(n-1)) * PIXEL
         x2 = (random.randrange(m-1)) * PIXEL
 
-        x1 = 5 * PIXEL
-        y1 = 3 * PIXEL
-        x2 = 6 * PIXEL
-        y2 = 7 * PIXEL
         posBeign[0] = x1
         posBeign[1] = y1
         final[0] = x2
@@ -83,7 +79,7 @@ def main():
             break
 
     inicial = [x1,y1]
-    beign = Beign('Human', posBeign[0], posBeign[1], costs)
+    beign = Beign('Octopus', posBeign[0], posBeign[1], costs)
     distancia = abs((final[0]-inicial[0])//PIXEL + (final[1]-inicial[1])//PIXEL)
     raiz = Node(str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->0," + str(distancia))
     padre = raiz
@@ -220,7 +216,7 @@ def main():
         if (etiqueta[0] <= scene.getDimensions()[0] and etiqueta[1] <= scene.getDimensions()[1]):
             scene.displayInfo(screen, string.format(scene.getDarkSide()[etiqueta[1]//PIXEL][etiqueta[0]//PIXEL]))
         pygame.display.flip()
-        reloj.tick(15)
+        reloj.tick(7)
 
 
 if __name__ == '__main__':
