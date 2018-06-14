@@ -1,6 +1,7 @@
 PIXEL = 30
 
-class Beign:
+class Being(Object):
+
     type = ""
     costs = []
     costT = 0

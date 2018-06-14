@@ -14,7 +14,7 @@ from anytree.exporter import DotExporter
 #Modulos personales
 from GUI.Scene import *
 from Archivo.Archivo import *
-from BEIGN.Beign import *
+from Being.Being import *
 
 # Constantes
 PIXEL = 30
@@ -50,7 +50,7 @@ def main():
     text = Archivo()
     matrix = text.read('lab2.txt')
     BD_Char = Archivo()
-    costs = BD_Char.read('BEIGN/beigns.txt')
+    costs = BD_Char.read('Being/beigns.txt')
 
     m = len(matrix[0])
     n = len(matrix)-1
@@ -61,7 +61,7 @@ def main():
     #time.sleep(50)
     scene.copy_world(m, n)
     scene.paint_world(screen, scene.getDarkSide(), 0)
-    posBeign = [0, 0]
+    posBeing = [0, 0]
     Final = True
 
     while True:
@@ -70,8 +70,8 @@ def main():
         y2 = (random.randrange(n-1)) * PIXEL
         x2 = (random.randrange(m-1)) * PIXEL
 
-        posBeign[0] = x1
-        posBeign[1] = y1
+        posBeing[0] = x1
+        posBeing[1] = y1
         final[0] = x2
         final[1] = y2
 
@@ -79,7 +79,7 @@ def main():
             break
 
     inicial = [x1,y1]
-    beign = Beign('Octopus', posBeign[0], posBeign[1], costs)
+    beign = Being('Octopus', posBeing[0], posBeing[1], costs)
     distancia = abs((final[0]-inicial[0])//PIXEL + (final[1]-inicial[1])//PIXEL)
     raiz = Node(str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->0," + str(distancia))
     padre = raiz

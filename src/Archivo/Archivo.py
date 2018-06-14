@@ -1,5 +1,5 @@
-class Archivo:
-    
+class Archivo(Object):
+
     def read(self, ruta):
         with open(ruta, 'r') as leer:
             contenido = leer.read().split('\n')

@@ -21,43 +21,31 @@ COLOR_LABEL = (255,0,255)
 PIXEL = 30
 
 
-class Scene:
-    darkside = []
-    world = []
+class View(Object):
+    #darkside = []
+    #world = []
 
-    def __init__(self, m, n):
+    def __init__(self, m, n, *matrix):
         width = m * PIXEL
         height = n * PIXEL
         self.dimensions = (width, height)
+        self.map = matrix
 
+    """
     def getDimensions(self):
-        return self.dimensions
-
-    def getworld(self):
-        return self.world
-
-    def getDarkSide(self):
-        return self.darkside
+        return self.dimensions"""
 
     def create_screen(self, dimensions):
         screen = pygame.display.set_mode((self.dimensions))
         pygame.display.set_caption('Artificial Intelligence')
         return screen
 
-    def copy_world(self, m, n):
-        self.darkside = [[ [-1,0,0,0,0] for j in range(m)] for i in range(n)]
-
-    def paint_world(self, screen, matrix, flag):
-        if flag == 0:
-            self.darkside = matrix
-        if flag == 1:
-            self.world = matrix
+    def paint_map(self, screen):
 
         x = 0
         y = 0
 
-        #screen.fill(WHITE)
-        for line in matrix:
+        for line in self.map:
             for value in line:
                 if flag == 0:
                     value = value[0]
@@ -78,7 +66,6 @@ class Scene:
                 x += PIXEL
             y += PIXEL
             x = 0
-        #pygame.display.update()
 
     def ask_terrain(self, screen):
         pos = pygame.mouse.get_pos()
@@ -99,6 +86,7 @@ class Scene:
         screen.blit(label, (pos[0], pos[1]))
         pygame.display.flip()
 
+
     def change_terrain(self):
         pos = pygame.mouse.get_pos()
 
@@ -110,6 +98,7 @@ class Scene:
                 break
 
         self.world[pos[1]//PIXEL][pos[0]//PIXEL] = newTerrain
+
 
     def paint_beign(self, screen, x, y):
         pygame.draw.rect(screen, COLOR_BEIGN, [x, y, PIXEL, PIXEL], 0)
@@ -127,7 +116,7 @@ class Scene:
 
         if ((y//PIXEL)+1 < self.dimensions[1]//PIXEL):
             self.darkside[(y//PIXEL)+1][x//PIXEL][0] = self.world[(y//PIXEL)+1][x//PIXEL]
-
+"""
     def askUP(self,beignX,beignY, flag):
         if (beignY - 1) >= 0:
             if(self.world[beignY-1][beignX] != '0'):
@@ -186,8 +175,9 @@ class Scene:
             else:
                 return False
         else:
-            return False
+            return False"""
 
+    """
     def getMap(self, beignX, beignY, direction):
         if(direction == "U"):
             return self.world[beignY-1][beignX]
@@ -196,15 +186,28 @@ class Scene:
         elif(direction == "R"):
             return self.world[beignY][beignX+1]
         elif(direction == "L"):
-            return self.world[beignY][beignX-1]
+            return self.world[beignY][beignX-1]"""
 
+
+    #def getworld(self):
+    #    return self.world
+
+    #def getDarkSide(self):
+    #    return self.darkside
+
+
+
+    #def copy_world(self, m, n):
+    #    self.darkside = [[ [-1,0,0,0,0] for j in range(m)] for i in range(n)]
+
+    """
     def print_darkside(self):
         i = 0
         for x in self.darkside:
             print("Darkside[{0}]-> \t{1}".format(i,self.darkside[i]))
-            i = i+1
+            i = i+1"""
 
-    def print_world(self):
+    def print_map(self):
         i = 0
         for x in self.world:
             print("World[{0}]-> \t{1}".format(i,self.world[i]))
