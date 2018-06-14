@@ -1,6 +1,6 @@
 import pygame, sys
 from pygame.locals import *
-
+from Archivo.Archivo import *
 # Constantes
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -11,65 +11,56 @@ YELLOW = (255, 190, 65)
 GREEN = (146, 209, 101)
 
 DEFAULT = (243, 123, 173)
-
 COLOR_L = (244,110,120)
-
 COLOR_BEIGN = (255, 0, 0)
-
 COLOR_LABEL = (255,0,255)
 
 PIXEL = 30
 
 
 class View(Object):
-    #darkside = []
-    #world = []
+    darkside = []
+    world = []
 
-    def __init__(self, m, n, *matrix):
+    def __init__(self, m, n, matrix):
         width = m * PIXEL
         height = n * PIXEL
         self.dimensions = (width, height)
         self.map = matrix
 
-    """
-    def getDimensions(self):
-        return self.dimensions"""
-
-    def create_screen(self, dimensions):
-        screen = pygame.display.set_mode((self.dimensions))
+    def create_View(self):
+        canvas = pygame.display.set_mode((self.dimensions))
         pygame.display.set_caption('Artificial Intelligence')
-        return screen
+        return canvas
 
-    def paint_map(self, screen):
-
+    def paint_Window(self, canvas):
         x = 0
         y = 0
-
         for line in self.map:
             for value in line:
                 if flag == 0:
                     value = value[0]
                 if value == '0':
-                    pygame.draw.rect(screen, GRAY, (x, y, PIXEL, PIXEL), 0)
+                    pygame.draw.rect(canvas, GRAY, (x, y, PIXEL, PIXEL), 0)
                 elif value == '1':
-                    pygame.draw.rect(screen, ORANGE_L, (x, y, PIXEL, PIXEL), 0)
+                    pygame.draw.rect(canvas, ORANGE_L, (x, y, PIXEL, PIXEL), 0)
                 elif value == '2':
-                    pygame.draw.rect(screen, BLUE, (x, y, PIXEL, PIXEL), 0)
+                    pygame.draw.rect(canvas, BLUE, (x, y, PIXEL, PIXEL), 0)
                 elif value == '3':
-                    pygame.draw.rect(screen, YELLOW, (x, y, PIXEL, PIXEL), 0)
+                    pygame.draw.rect(canvas, YELLOW, (x, y, PIXEL, PIXEL), 0)
                 elif value == '4':
-                    pygame.draw.rect(screen, GREEN, (x, y, PIXEL, PIXEL), 0)
+                    pygame.draw.rect(canvas, GREEN, (x, y, PIXEL, PIXEL), 0)
                 elif value == -1:
-                    pygame.draw.rect(screen, BLACK, (x, y, PIXEL, PIXEL), 0)
+                    pygame.draw.rect(canvas, BLACK, (x, y, PIXEL, PIXEL), 0)
                 else:
-                    pygame.draw.rect(screen, DEFAULT, (x, y, PIXEL, PIXEL), 0)
+                    pygame.draw.rect(canvas, DEFAULT, (x, y, PIXEL, PIXEL), 0)
                 x += PIXEL
             y += PIXEL
             x = 0
 
-    def ask_terrain(self, screen):
+    def ask_terrain(self, canvas):
         pos = pygame.mouse.get_pos()
-        num = self.world[pos[1]//PIXEL][pos[0]//PIXEL]
+        num = self.map[pos[1]//PIXEL][pos[0]//PIXEL]
         font = pygame.font.SysFont('comicsansms', 30)
 
         if num == '0':
@@ -83,9 +74,8 @@ class View(Object):
         elif num == '4':
             label = font.render("Forest", 1, COLOR_L)
 
-        screen.blit(label, (pos[0], pos[1]))
+        canvas.blit(label, (pos[0], pos[1]))
         pygame.display.flip()
-
 
     def change_terrain(self):
         pos = pygame.mouse.get_pos()
@@ -97,26 +87,61 @@ class View(Object):
             if newTerrain < "5" and newTerrain >= "0":
                 break
 
-        self.world[pos[1]//PIXEL][pos[0]//PIXEL] = newTerrain
+        self.map[pos[1]//PIXEL][pos[0]//PIXEL] = newTerrain
 
-
-    def paint_beign(self, screen, x, y):
-        pygame.draw.rect(screen, COLOR_BEIGN, [x, y, PIXEL, PIXEL], 0)
-
-        self.darkside[y//PIXEL][x//PIXEL][0] = self.world[y//PIXEL][x//PIXEL]
-
+    def paint_beign(self, canvas, x, y):
+        pygame.draw.rect(canvas, COLOR_BEIGN, [x, y, PIXEL, PIXEL], 0)
+        self.darkside[y//PIXEL][x//PIXEL][0] = self.map[y//PIXEL][x//PIXEL]
         if (x//PIXEL != 0):
-            self.darkside[y//PIXEL][(x//PIXEL)-1][0] = self.world[y//PIXEL][(x//PIXEL)-1]
-
+            self.darkside[y//PIXEL][(x//PIXEL)-1][0] = self.map[y//PIXEL][(x//PIXEL)-1]
         if (y//PIXEL != 0):
-            self.darkside[(y//PIXEL)-1][x//PIXEL][0] = self.world[(y//PIXEL)-1][x//PIXEL]
-
+            self.darkside[(y//PIXEL)-1][x//PIXEL][0] = self.map[(y//PIXEL)-1][x//PIXEL]
         if ((x//PIXEL)+1 < self.dimensions[0]//PIXEL):
-            self.darkside[y//PIXEL][(x//PIXEL)+1][0] = self.world[y//PIXEL][(x//PIXEL)+1]
-
+            self.darkside[y//PIXEL][(x//PIXEL)+1][0] = self.map[y//PIXEL][(x//PIXEL)+1]
         if ((y//PIXEL)+1 < self.dimensions[1]//PIXEL):
-            self.darkside[(y//PIXEL)+1][x//PIXEL][0] = self.world[(y//PIXEL)+1][x//PIXEL]
-"""
+            self.darkside[(y//PIXEL)+1][x//PIXEL][0] = self.map[(y//PIXEL)+1][x//PIXEL]
+
+    #def getworld(self):
+    #    return self.world
+
+    #def getDarkSide(self):
+    #    return self.darkside
+
+    #def copy_world(self, m, n):
+    #    self.darkside = [[ [-1,0,0,0,0] for j in range(m)] for i in range(n)]
+
+    def print_map(self):
+        i = 0
+        for x in self.map:
+            print("Map[{0}]-> \t{1}".format(i,self.map[i]))
+            i = i+1
+
+    def displayInfo(self, canvas, string):
+        pos = pygame.mouse.get_pos()
+        font = pygame.font.SysFont("monospace bold", 16)
+        label = font.render(str(string), 1, COLOR_LABEL )
+        canvas.blit(label, (pos[0]+5, pos[1]-10))
+
+            """
+            def print_darkside(self):
+                i = 0
+                for x in self.darkside:
+                    print("Darkside[{0}]-> \t{1}".format(i,self.darkside[i]))
+                    i = i+1
+
+            def getDimensions(self):
+                return self.dimensions
+
+                def getMap(self, beignX, beignY, direction):
+                    if(direction == "U"):
+                        return self.world[beignY-1][beignX]
+                    elif(direction == "D"):
+                        return self.world[beignY+1][beignX]
+                    elif(direction == "R"):
+                        return self.world[beignY][beignX+1]
+                    elif(direction == "L"):
+                        return self.world[beignY][beignX-1]
+
     def askUP(self,beignX,beignY, flag):
         if (beignY - 1) >= 0:
             if(self.world[beignY-1][beignX] != '0'):
@@ -175,46 +200,6 @@ class View(Object):
             else:
                 return False
         else:
-            return False"""
+            return False
 
-    """
-    def getMap(self, beignX, beignY, direction):
-        if(direction == "U"):
-            return self.world[beignY-1][beignX]
-        elif(direction == "D"):
-            return self.world[beignY+1][beignX]
-        elif(direction == "R"):
-            return self.world[beignY][beignX+1]
-        elif(direction == "L"):
-            return self.world[beignY][beignX-1]"""
-
-
-    #def getworld(self):
-    #    return self.world
-
-    #def getDarkSide(self):
-    #    return self.darkside
-
-
-
-    #def copy_world(self, m, n):
-    #    self.darkside = [[ [-1,0,0,0,0] for j in range(m)] for i in range(n)]
-
-    """
-    def print_darkside(self):
-        i = 0
-        for x in self.darkside:
-            print("Darkside[{0}]-> \t{1}".format(i,self.darkside[i]))
-            i = i+1"""
-
-    def print_map(self):
-        i = 0
-        for x in self.world:
-            print("World[{0}]-> \t{1}".format(i,self.world[i]))
-            i = i+1
-
-    def displayInfo(self, screen, string):
-        pos = pygame.mouse.get_pos()
-        font = pygame.font.SysFont("monospace bold", 16)
-        label = font.render(str(string), 1, COLOR_LABEL )
-        screen.blit(label, (pos[0]+5, pos[1]-10))
+                """

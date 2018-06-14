@@ -10,7 +10,6 @@ from anytree import Node, RenderTree
 from anytree.search import *
 from anytree.exporter import DotExporter
 
-
 #Modulos personales
 from GUI.Scene import *
 from Archivo.Archivo import *
@@ -20,7 +19,6 @@ from Being.Being import *
 PIXEL = 30
 final = [0,0]
 # ---------------------------------------------------------------------
-
 # Funciones
 # ---------------------------------------------------------------------
 def min(nodos):
@@ -43,9 +41,7 @@ def min(nodos):
             nodoF = nodo
             min = actual
     return nodoF
-
 # ---------------------------------------------------------------------
-
 def main():
     text = Archivo()
     matrix = text.read('lab2.txt')
@@ -213,11 +209,11 @@ def main():
         scene.paint_beign(screen, beign.getX, beign.getY)
         etiqueta = pygame.mouse.get_pos()
         string = "{0}"
+
         if (etiqueta[0] <= scene.getDimensions()[0] and etiqueta[1] <= scene.getDimensions()[1]):
             scene.displayInfo(screen, string.format(scene.getDarkSide()[etiqueta[1]//PIXEL][etiqueta[0]//PIXEL]))
         pygame.display.flip()
         reloj.tick(7)
-
 
 if __name__ == '__main__':
     pygame.init()
