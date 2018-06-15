@@ -17,6 +17,8 @@ from BEIGN.Beign import *
 
 # Constantes
 PIXEL = 30
+
+final = [0,0]
 # definiciones globales
 text = Archivo()
 matrix = text.read('lab2.txt')
@@ -36,15 +38,26 @@ def min(nodos):
     min = int(str(nodoF).split("/")[-1].split(",")[-1].split("'")[0])
     for nodo in nodos:
         actual = int(str(nodo).split("/")[-1].split(",")[-1].split("'")[0])
-        if(actual < min):
+        if(actual == min):
+            XA = int(str(nodo).split("->")[-1].split(",")[0])
+            YA = int(str(nodo).split("->")[-1].split(",")[1].split("'")[0])
+            dA = YA - XA
+            XF = int(str(nodoF).split("->")[-1].split(",")[0])
+            YF = int(str(nodoF).split("->")[-1].split(",")[1].split("'")[0])
+            dF = YF - XF
+            if(dA == dF):
+                pass
+            elif(dA < dF):
+                nodoF = nodo
+        elif(actual < min):
             nodoF = nodo
+            min = actual
     return nodoF
 
 # ---------------------------------------------------------------------
 
 def main(cad, meta, scene, screen):
     posBeign = [0, 0]
-    final = meta
     Final = True
     while True:
         y1 = (random.randrange(n-1)) * PIXEL
@@ -202,7 +215,7 @@ def main(cad, meta, scene, screen):
             scene.displayInfo(screen, string.format(scene.getDarkSide()[etiqueta[1]//PIXEL][etiqueta[0]//PIXEL]))
         #i += 1
         pygame.display.flip()
-        reloj.tick(15)
+        reloj.tick(7)
 
 
 if __name__ == '__main__':
