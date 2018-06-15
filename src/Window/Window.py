@@ -36,7 +36,7 @@ class Window(object):
                 if evento.type == QUIT:
                     pygame.quit()
                     sys.exit(0)
-            #self.paint()
+            self.paint()
             pygame.display.flip()
             self.__reloj.tick(7)
 
@@ -49,7 +49,7 @@ class Window(object):
                 if x == 3*PIXEL and y == 3*PIXEL:
                     global COLOR_BEIGN
                     pygame.draw.rect(self.canvas, COLOR_BEIGN, (x, y, PIXEL, PIXEL), 0)
-                elif value == '0':
+                if value == '0':
                     global GRAY
                     pygame.draw.rect(self.canvas, GRAY, (x, y, PIXEL, PIXEL), 0)
                 elif value == '1':
