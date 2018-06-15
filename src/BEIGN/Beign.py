@@ -1,4 +1,5 @@
 PIXEL = 30
+
 class Beign:
     type = ""
     costs = []
@@ -43,8 +44,8 @@ class Beign:
                 self.y = self.y-PIXEL
                 self.costT = self.costT + int(self.costs[int(map) + 1])
             elif flag == 0:
-                return 0
-        return 1
+                return 1
+        return 0
 
     def DOWN(self, map, flag):
         if self.costs[int(map) + 1] != 'X':
@@ -52,8 +53,8 @@ class Beign:
                 self.y += PIXEL
                 self.costT = self.costT + int(self.costs[int(map) + 1])
             elif flag == 0:
-                return 0
-        return 1
+                return 1
+        return 0
 
     def RIGHT(self, map, flag):
         if self.costs[int(map) + 1] != 'X':
@@ -61,8 +62,8 @@ class Beign:
                 self.x = self.x+PIXEL
                 self.costT = self.costT + int(self.costs[int(map) + 1])
             elif flag == 0:
-                return 0
-        return 1
+                return 1
+        return 0
 
     def LEFT(self, map, flag):
         if self.costs[int(map) + 1] != 'X':
@@ -70,5 +71,5 @@ class Beign:
                 self.x = self.x-PIXEL
                 self.costT = self.costT + int(self.costs[int(map) + 1])
             elif flag == 0:
-                return 0
-        return 1
+                return 1
+        return 0

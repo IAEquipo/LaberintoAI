@@ -2,11 +2,13 @@
 # -*- coding: utf-8 -*-
 
 # Módulos
-import pygame, sys, random, time
+import pygame, sys, random, time, graphviz, threading
+from subprocess import check_call
+
 from pygame.locals import *
 from anytree import Node, RenderTree
 from anytree.search import *
-from anytree.dotexport import RenderTreeGraph
+from anytree.exporter import DotExporter
 
 #Modulos personales
 from GUI.Scene import *
@@ -15,13 +17,9 @@ from BEIGN.Beign import *
 
 # Constantes
 PIXEL = 30
-p = 1
-inc = 2
 # definiciones globales
-
-
 text = Archivo()
-matrix = text.read('file.txt')
+matrix = text.read('lab2.txt')
 BD_Char = Archivo()
 costs = BD_Char.read('BEIGN/beigns.txt')
 reloj = pygame.time.Clock()
@@ -29,242 +27,52 @@ reloj = pygame.time.Clock()
 m = len(matrix[0])
 n = len(matrix)-1
 
-scene = Scene(m, n)
-screen = scene.create_screen(scene.getDimensions())
-scene.paint_world(screen, matrix, 1)
-scene.copy_world(m, n)
-scene.paint_world(screen, scene.getDarkSide(), 0)
-posBeign = [0, 0]
-while True:
-    x = (random.randrange(m-1)) * PIXEL
-    y = (random.randrange(n-1)) * PIXEL
-
-    x = 3 * PIXEL
-    y = 3 * PIXEL
-
-    posBeign[0] = x
-    posBeign[1] = y
-
-    if matrix[y//PIXEL][x//PIXEL] != "0":
-        break
-
-inicial = [x,y]
-beign = Beign('Human', posBeign[0], posBeign[1], costs)
-
 # ---------------------------------------------------------------------
 
 # Funciones
 # ---------------------------------------------------------------------
-# def move(flag):
+def min(nodos):
+    nodoF = nodos[0]
+    min = int(str(nodoF).split("/")[-1].split(",")[-1].split("'")[0])
+    for nodo in nodos:
+        actual = int(str(nodo).split("/")[-1].split(",")[-1].split("'")[0])
+        if(actual < min):
+            nodoF = nodo
+    return nodoF
 
-# def ask():
 # ---------------------------------------------------------------------
 
-def anchura(nodo):
-    iterador = inc
-    x = str(nodo).split("/")[-1].split(",")[0]
-    y = str(nodo).split("/")[-1].split(",")[1].split("->")[0]
-    beign.setX(int(x)*PIXEL)
-    beign.setY(int(y)*PIXEL)
-    beign.setCostT(str(nodo).split("/")[-1].split(",")[1].split("->")[1].split("'")[0])
-    padre = nodo
-    back = False
-    forward = True
-    flagChild = False
+def main(cad, meta, scene, screen):
+    posBeign = [0, 0]
+    final = meta
+    Final = True
+    while True:
+        y1 = (random.randrange(n-1)) * PIXEL
+        x1 = (random.randrange(m-1)) * PIXEL
+        posBeign[0] = x1
+        posBeign[1] = y1
 
-    #print("Nodo raiz de anchura: {}".format(padre))
+        if matrix[y1//PIXEL][x1//PIXEL] != "0":
+            break
 
-    while(True):
-        #print("Iteracion: {}".format(i))
-        if(pygame.mouse.get_pressed()[0] != 0):
-            scene.ask_terrain(screen)
-
-        #print("x: {}\ty: {}".format(beign.getX//PIXEL, beign.getY//PIXEL))
-        for evento in pygame.event.get():
-            if evento.type == QUIT:
-                pygame.quit()
-                sys.exit(0)
-        scene.paint_world(screen, matrix, 1)
-
-        #print(padre)
-
-        if(pygame.mouse.get_pressed()[2] != 0):
-            scene.change_terrain()
-            scene.paint_world(screen, matrix, 1)
-
-        if(back):
-            #print(padre)
-            iterador += 1
-            flagChild = False
-            try:
-                x = str(padre).split("/")[-1].split(",")[0]
-                y = str(padre).split("/")[-1].split(",")[1].split("->")[0]
-                beign.setX(int(x)*PIXEL)
-                beign.setY(int(y)*PIXEL)
-                beign.setCostT(str(padre).split("/")[-1].split(",")[1].split("->")[1].split("'")[0])
-                #print(" Regresa x: {}\ty: {}".format(beign.getX//PIXEL, beign.getY//PIXEL))
-                forward = False
-            except AttributeError:
-                forward = True
-                back = False
-                return
-
-        #print("1. {}".format(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL,0)))
-        #print("2. {}".format(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL,0)))
-        #print("3. {}".format(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL,0)))
-        #print("4. {}".format(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL,0)))
-        if(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL,0)):
-            beign.LEFT(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL,0),1)
-            back = False
-            forward = True
-            flagChild = True
-        elif(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL,0)):
-            beign.UP(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL,0),1)
-            back = False
-            forward = True
-            flagChild = True
-        elif(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL,0)):
-            beign.DOWN(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL,0),1)
-            back = False
-            forward = True
-            flagChild = True
-        elif(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL,0)):
-            beign.RIGHT(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL,0),1)
-            back = False
-            forward = True
-            flagChild = True
-        else:
-            x = str(padre).split("/")[-1].split(",")[0]
-            y = str(padre).split("/")[-1].split(",")[1].split("->")[0]
-            beign.setX(int(x)*PIXEL)
-            beign.setY(int(y)*PIXEL)
-            beign.setCostT(str(padre).split("/")[-1].split(",")[1].split("->")[1].split("'")[0])
-
-            if(forward):
-                for i in range(len(padre.children)):
-                    #print("for de main: {}".format(i))
-                    forward = True
-                    anchura(padre.children[i])
-                forward = False
-                back = True
-            elif(padre.is_root):
-                return
-            elif(back):
-                padre = padre.parent
-                x = str(padre).split("/")[-1].split(",")[0]
-                y = str(padre).split("/")[-1].split(",")[1].split("->")[0]
-                beign.setX(int(x)*PIXEL)
-                beign.setY(int(y)*PIXEL)
-                beign.setCostT(str(padre).split("/")[-1].split(",")[1].split("->")[1].split("'")[0])
-                forward = False
-                back = True
-            else:
-                x = str(padre).split("/")[-1].split(",")[0]
-                y = str(padre).split("/")[-1].split(",")[1].split("->")[0]
-                beign.setX(int(x)*PIXEL)
-                beign.setY(int(y)*PIXEL)
-                back = True
-                forward = False
-
-        #print("x: {}\ty: {}".format(beign.getX//PIXEL, beign.getY//PIXEL))
-
-        Decision = 0
-        #print("Decision: {}".format(Decision))
-
-        #print("L: {}".format(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL,1)))
-        if(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL,1)):
-            Decision = Decision + 1
-
-        #print("U: {}".format(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL,1)))
-        if(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL,1)):
-            Decision = Decision + 1
-
-        #print("D: {}".format(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL,1)))
-        if(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL,1)):
-            Decision = Decision + 1
-
-        #print("R: {}".format(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL,1)))
-        if(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL,1)):
-            Decision = Decision + 1
-
-        Actual = "a"
-        Shadow = scene.getDarkSide()[beign.getY//PIXEL][beign.getX//PIXEL][0]
-
-        #print("Decision: {}".format(Decision))
-        #print("is_root: {}".format(padre.is_root))
-        if(Decision > 2):
-            d = "d"
-            if (flagChild == True):
-                flagChild = False
-                #print("find: {}".format(findall(padre, lambda node: node.name == "" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "")))
-                if (findall(padre, lambda node: node.name == "" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "") != None):
-                    #print("D2 -> 1:{}".format(padre))
-                    aux = str(padre).split("/")[-1].split("->")[0]
-                    #print("aux: {}".format(aux))
-                    #print("cad: {}".format("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + ""))
-                    if(("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "") != aux):
-                        padre = Node("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "", parent=padre)
-                        iterador -= 1
-                        if iterador == 0:
-                            padre = padre.parent
-                            back = True
-                            forward = False
-                        #print("D2 -> 2:{}".format(padre))
-                #print(RenderTree(raiz))
-        elif(Decision == 1 and not padre.is_root):
-            d = 0
-            #print("find: {}".format(findall(padre, lambda node: node.name == "" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "")))
-            if (flagChild == True):
-                flagChild = False
-                if (findall(padre, lambda node: node.name == "" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "") != None):
-                    #print("D1 -> 1:{}".format(padre))
-                    aux = str(padre).split("/")[-1].split("->")[0]
-                    #print("aux: {}".format(aux))
-                    #print("cad: {}".format("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + ""))
-                    if(("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "") != aux):
-                        padre = Node("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "", parent=padre)
-                        padre = padre.parent
-                        iterador -= 1
-                        #print("D1 -> 2:{}".format(padre))
-                        back = True
-                        forward = False
-                #print(RenderTree(nodo))
-        else:
-            d = 0
-
-        scene.getDarkSide()[beign.getY//PIXEL][beign.getX//PIXEL] = [Shadow,0,"v",d,Actual]
-
-        scene.getDarkSide()[inicial[1]//PIXEL][inicial[0]//PIXEL][1]="i"
-        scene.getDarkSide()[inicial[1]//PIXEL][inicial[0]//PIXEL][3]="d"
-        scene.getDarkSide()[inicial[1]//PIXEL][inicial[0]//PIXEL][2]="v"
-
-        scene.paint_world(screen, scene.getDarkSide(), 0)
-        scene.paint_beign(screen, beign.getX, beign.getY)
-        etiqueta = pygame.mouse.get_pos()
-        string = "{0}"
-        if (etiqueta[0] <= scene.getDimensions()[0] and etiqueta[1] <= scene.getDimensions()[1]):
-            scene.displayInfo(screen, string.format(scene.getDarkSide()[etiqueta[1]//PIXEL][etiqueta[0]//PIXEL]))
-
-        pygame.display.flip()
-        reloj.tick(15)
-
-
-
-def main():
-    iterador = p
-    back = False
-    forward = True
-    #i = 0
-    raiz = Node("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->0")
+    inicial = [x1,y1]
+    beign = Beign(cad, posBeign[0], posBeign[1], costs)
+    distancia = abs((final[0]-inicial[0])//PIXEL + (final[1]-inicial[1])//PIXEL)
+    raiz = Node(str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->0," + str(distancia))
     padre = raiz
+    back = False
+    open_node = []
+    close_node = []
     scene.getDarkSide()[beign.getY//PIXEL][beign.getX//PIXEL][3] ="d"
-    #Temp = 0
-
     scene.paint_world(screen, scene.getDarkSide(), 0)
     scene.paint_beign(screen, beign.getX, beign.getY)
+    open_node.append(raiz)
+    print("inicio {}: {}, {}".format(cad, inicial[0]//PIXEL, inicial[1]//PIXEL))
+    print("final {}: {}, {}".format(cad, final[0]//PIXEL, final[1]//PIXEL))
 
     while True:
-        #print(i)
+        print("x: {}\ty: {}".format(beign.getX//PIXEL, beign.getY//PIXEL))
+        scene.print_darkside()
         if(pygame.mouse.get_pressed()[0] != 0):
             scene.ask_terrain(screen)
 
@@ -278,69 +86,64 @@ def main():
             scene.change_terrain()
             scene.paint_world(screen, matrix, 1)
 
+        if(beign.getX == final[0] and beign.getY == final[1]):
+            if (Final):
+                Final = False
+                distancia = abs((final[0]-beign.getX)//PIXEL + (final[1]-beign.getY)//PIXEL)
+                total = beign.getCostT + distancia
+                padre = Node(str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "," + str(total), parent=padre)
+                ruta = str(padre).split("'")[1]
+                DotExporter(raiz).to_dotfile(str(cad)+".dot")
+                check_call(['dot','-Tpng',str(cad)+'.dot','-o',str(cad)+'.png'])
+                print(cad)
+                print(RenderTree(raiz))
+                print("Ruta: \t{}".format(ruta))
+            return
         if(back):
-            #print(padre)
             x = str(padre).split("/")[-1].split(",")[0]
             y = str(padre).split("/")[-1].split(",")[1].split("->")[0]
             beign.setX(int(x)*PIXEL)
             beign.setY(int(y)*PIXEL)
             beign.setCostT(str(padre).split("/")[-1].split(",")[1].split("->")[1].split("'")[0])
+
+        if(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL,0) and beign.LEFT(scene.getMap(beign.getX//PIXEL, beign.getY//PIXEL,"L"),0)):
+            scene.getDarkSide()[beign.getY//PIXEL][beign.getX//PIXEL][4] = 0
+            beign.LEFT(scene.getMap(beign.getX//PIXEL, beign.getY//PIXEL,"L"),1)
             flagChild = False
-            iterador += 1
-
-            #print(" Regresa x: {}\ty: {}".format(beign.getX//PIXEL, beign.getY//PIXEL))
-
-        #print("1. {}".format(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL,0)))
-        #print("2. {}".format(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL,0)))
-        #print("3. {}".format(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL,0)))
-        #print("4. {}".format(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL,0)))
-        if(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL,0)):
-            beign.LEFT(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL,0),1)
             back = False
-            flagChild = True
-        elif(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL,0)):
-            beign.UP(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL,0),1)
+        elif(scene.askUP(beign.getX//PIXEL, beign.getY//PIXEL,0) and beign.UP(scene.getMap(beign.getX//PIXEL, beign.getY//PIXEL,"U"),0)):
+            scene.getDarkSide()[beign.getY//PIXEL][beign.getX//PIXEL][4] = 0
+            beign.UP(scene.getMap(beign.getX//PIXEL, beign.getY//PIXEL,"U"),1)
+            flagChild = False
             back = False
-            flagChild = True
-        elif(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL,0)):
-            beign.DOWN(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL,0),1)
+        elif(scene.askDOWN(beign.getX//PIXEL, beign.getY//PIXEL,0) and beign.DOWN(scene.getMap(beign.getX//PIXEL, beign.getY//PIXEL,"D"),0)):
+            scene.getDarkSide()[beign.getY//PIXEL][beign.getX//PIXEL][4] = 0
+            beign.DOWN(scene.getMap(beign.getX//PIXEL, beign.getY//PIXEL,"D"),1)
+            flagChild = False
             back = False
-            flagChild = True
-        elif(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL,0)):
-            beign.RIGHT(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL,0),1)
+        elif(scene.askRIGHT(beign.getX//PIXEL, beign.getY//PIXEL,0) and beign.RIGHT(scene.getMap(beign.getX//PIXEL, beign.getY//PIXEL,"R"),0)):
+            scene.getDarkSide()[beign.getY//PIXEL][beign.getX//PIXEL][4] = 0
+            beign.RIGHT(scene.getMap(beign.getX//PIXEL, beign.getY//PIXEL,"R"),1)
+            flagChild = False
             back = False
             flagChild = True
         else:
-            x = str(padre).split("/")[-1].split(",")[0]
-            y = str(padre).split("/")[-1].split(",")[1].split("->")[0]
-            beign.setX(int(x)*PIXEL)
-            beign.setY(int(y)*PIXEL)
-            beign.setCostT(str(padre).split("/")[-1].split(",")[1].split("->")[1].split("'")[0])
-
-            if(padre.is_root):
-                #print(padre.children)
-                for i in range(len(padre.children)):
-                    #print("for de main: {}".format(i))
-                    forward = True
-                    anchura(padre.children[i])
-                print(RenderTree(raiz))
-                forward = False
-            elif(back):
-                padre = padre.parent
+            if(back):
                 x = str(padre).split("/")[-1].split(",")[0]
                 y = str(padre).split("/")[-1].split(",")[1].split("->")[0]
                 beign.setX(int(x)*PIXEL)
                 beign.setY(int(y)*PIXEL)
                 beign.setCostT(str(padre).split("/")[-1].split(",")[1].split("->")[1].split("'")[0])
-                forward = False
+                close_node.append(padre)
+                open_node.remove(padre)
+                padre = min(open_node)
             else:
                 x = str(padre).split("/")[-1].split(",")[0]
                 y = str(padre).split("/")[-1].split(",")[1].split("->")[0]
                 beign.setX(int(x)*PIXEL)
                 beign.setY(int(y)*PIXEL)
-                back = True
+                beign.setCostT(str(padre).split("/")[-1].split(",")[1].split("->")[1].split("'")[0])
 
-        #print("x: {}\ty: {}".format(beign.getX//PIXEL, beign.getY//PIXEL))
         Decision = 0
         #print("Decision: {}".format(Decision))
         #print("L: {}".format(scene.askLEFT(beign.getX//PIXEL, beign.getY//PIXEL,1)))
@@ -362,25 +165,26 @@ def main():
         Actual = "a"
         Shadow = scene.getDarkSide()[beign.getY//PIXEL][beign.getX//PIXEL][0]
 
-        #print("Decision: {}".format(Decision))
-        if(Decision > 2):
+        if Decision > 2:
             d = "d"
-            if (flagChild == True):
-                flagChild = False
-                padre = Node("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "", parent=padre)
-                iterador -= 1
-                if iterador == 0:
-                    padre = padre.parent
-                    back = True
+            if (flagChild == False):
+                back = True
+                distancia = abs((final[0]-beign.getX)//PIXEL + (final[1]-beign.getY)//PIXEL)
+                total = beign.getCostT + distancia
+                padre = Node(str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "," + str(total), parent=padre)
+                flagChild = True
+                open_node.append(padre)
+                padre = padre.parent
 
-                #print(RenderTree(raiz))
-        elif(Decision == 1):
+        elif Decision == 1:
             d = 0
-            hijo = Node("" + str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "", parent=padre)
-            padre = hijo.parent
-            back = True
-            iterador -= 1
-            #print(RenderTree(raiz))
+            if (flagChild == False):
+                back = True
+                distancia = abs((final[0]-beign.getX)//PIXEL + (final[1]-beign.getY)//PIXEL)
+                total = beign.getCostT + distancia
+                padre = Node(str(beign.getX//PIXEL) + "," + str(beign.getY//PIXEL) + "->" + str(beign.getCostT) + "," + str(total), parent=padre)
+                flagChild = True
+                padre = padre.parent
         else:
             d = 0
 
@@ -403,4 +207,26 @@ def main():
 
 if __name__ == '__main__':
     pygame.init()
-    main()
+
+    scene1 = Scene(m, n)
+    screen1 = scene1.create_screen(scene1.getDimensions())
+    scene1.paint_world(screen1, matrix, 1)
+    scene1.copy_world(m, n)
+    scene1.paint_world(screen1, scene1.getDarkSide(), 0)
+
+    scene2 = Scene(m, n)
+    screen2 = scene2.create_screen(scene2.getDimensions())
+    scene2.paint_world(screen2, matrix, 1)
+    scene2.copy_world(m, n)
+    scene2.paint_world(screen2, scene2.getDarkSide(), 0)
+
+    meta1 = [0*PIXEL,0*PIXEL]
+    meta2 = [14*PIXEL,14*PIXEL]
+    main('Octopus',meta1, scene1, screen1)
+    main('Human',meta2, scene2, screen2)
+    #h1 = threading.Thread(target=main, args=('Octopus',meta1, scene1, screen1), name='Octopus')
+    #h2 = threading.Thread(target=main, args=('Human',meta2, scene2, screen2), name='Human')
+    #h1.start()
+    #h2.start()
+    #h1.join()
+    #h2.join()
